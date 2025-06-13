@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>GreenMind</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="frontend/css/reset.css" rel="stylesheet">
+    <link href="frontend/css/style.css" rel="stylesheet">
+</head>
+<body>
+<div class="wrapper">
+
+
+    <header class="header">
+        <div class="logo_and_menu">
+            <h1 class="logo">
+                <a aria-label="Перейти на главную" href="#">GREENMIND</a>
+            </h1>
+            <nav role="navigation">
+                <ul class="menu">
+                    <li><a href="#">Home</a></li>
+                    <li><a class="gray" href="#"> Products</a></li>
+                    <li><a class="gray" href="#"> Contacts </a></li>
+                </ul>
+            </nav>
+        </div>
+        <nav role="navigation">
+            <ul class="utils">
+                <li class="cart">
+                    <a href="#" id="cartIcon"><img alt="" src="frontend/img/header/Cart.svg"></a></li>
+                <li class="person">
+                    <a href="#" id="personIcon"><img alt="" src="frontend/img/header/Profile.svg"></a></li>
+                <li class="burger-btn" id="menuBtn">
+                    <button aria-label="Меню" class="burger-btn">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                </li>
+            </ul>
+        </nav>
+
+    </header>
+    <div class="overlay" id="overlay"></div>
+
+    <nav aria-hidden="true" class="side-nav" id="sideNav">
+        <ul>
+            <li><a data-action="profile" href="#">Profile</a></li>
+            <li><a data-action="cart" href="#">Cart</a></li>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Products</a></li>
+            <li><a href="#">Contacts</a></li>
+        </ul>
+    </nav>
+    <div aria-hidden="true" id="login-modal">
+        <div aria-labelledby="login-title" aria-modal="true" id="login-box" role="dialog">
+            <h2 id="login-title">Вход на сайт</h2>
+            <form id="login-form">
+                <label>
+                    Email
+                    <input autocomplete="username" name="email" placeholder="you@example.com" required type="email">
+                </label>
+                <label>
+                    Пароль
+                    <input autocomplete="current-password" name="password" placeholder="••••••••" required
+                           type="password">
+                </label>
+                <button type="submit">Войти</button>
+                <p class="login-note"> Нет аккаунта? <a class="register-btn" href="frontend/register.html">Зарегистрироваться</a>
+                </p>
+            </form>
+        </div>
+    </div>
+    <main>
+        <section class="hero-search">
+            <div class="hero-search__content">
+                <h1 class="hero-search__title">
+                    Buy your <br class="br">dream plants
+                </h1>
+                <div class="hero-search__stats">
+                    <div class="hero-search__stats-item hero-search__stats-item--plant">
+                        <div class="hero-search__stats-item__value">50+</div>
+                        <div class="hero-search__stats-item__label">Plant Species</div>
+                    </div>
+
+                    <div class="hero-search__stats-item hero-search__stats-divider"></div>
+
+                    <div class="hero-search__stats-item hero-search__stats-item--customers">
+                        <div class="hero-search__stats-item__value">100+</div>
+                        <div class="hero-search__stats-item__label">Customers</div>
+                    </div>
+                </div>
+                <form action="search" class="hero-search__form" role="search">
+                    <label class="hero-search__label sr-only" for="hero-search">Search</label>
+
+                    <input
+                            autocomplete="off"
+                            class="hero-search__input"
+                            id="hero-search"
+                            name="q./mvnqw w w spinring-boot:run"
+                            placeholder="What are you looking for?"
+                            type="search"
+                    >
+
+                    <button aria-label="Find" class="hero-search__btn" type="submit">
+                        <img alt="" height="18" src="frontend/img/main/hero-search/Vector-3.svg" width="18">
+                    </button>
+                </form>
+            </div>
+            <div class="hero-search__images">
+                <img alt="" src="frontend/img/main/hero-search/Hand-with-plant.svg">
+                <span class="hero-search__images-background"></span>
+            </div>
+        </section>
+        <section class="Best-Selling">
+            <div class="Best-Selling__content">
+                <div class="Best-Selling__info">
+                    <h2 class="Best-Selling__info-title section-title">
+                        Best Selling Plants
+                    </h2>
+                    <p class="Best-Selling__info-text section-text">
+                        Easiest way to <br> healthy life by buying <br> your favorite plants
+                    </p>
+                    <button class="Best-Selling__info-button desktop">
+                        <a class="Categories-card__info-link" href="#"> See more <img
+                                alt="arrow" class="Best-Selling__info-icon"
+                                src="frontend/img/main/Best%20Selling%20/Vector-4.svg">
+                        </a>
+                    </button>
+                </div>
+                <ul class="Best-Selling__list">
+                    <li class="Best-Selling__item">
+                        <figure class="product">
+                            <img alt="" class="product__image" src="frontend/img/main/Best%20Selling%20/Frame_9.svg">
+                            <figcaption class="product__info">
+                                <span class="product__name">Natural Plants</span>
+                                <span class="product__price">₱1,400.00</span>
+                            </figcaption>
+                        </figure>
+                    </li>
+                    <li class="Best-Selling__item">
+                        <figure class="product">
+                            <img alt="" class="product__image" src="frontend/img/main/Best%20Selling%20/Frame_8.svg">
+                            <figcaption class="product__info">
+                                <span class="product__name">Artificial Plants</span>
+                                <span class="product__price">₱900.00</span>
+                            </figcaption>
+                        </figure>
+                    </li>
+                    <li class="Best-Selling__item">
+                        <figure class="product">
+                            <img alt="" class="product__image" src="frontend/img/main/Best%20Selling%20/Frame_7.svg">
+                            <figcaption class="product__info">
+                                <span class="product__name">Artificial Plants</span>
+                                <span class="product__price">₱3,500.00</span>
+                            </figcaption>
+                        </figure>
+                    </li>
+                </ul>
+                <button class="Best-Selling__info-button mobile">
+                    See more<img alt="arrow" class="Best-Selling__info-icon"
+                                 src="frontend/img/main/Best%20Selling%20/Vector-4.svg">
+                </button>
+            </div>
+        </section>
+        <section class="About-Us">
+            <div class="About-Us__content">
+                <div class="About-Us__info">
+                    <h2 class="section-title">
+                        About Us
+                    </h2>
+                    <p class="section-text">
+                        Order now and appreciate the beauty of nature
+                    </p>
+                </div>
+                <ul class="About-Us__list">
+                    <li class="About-Us__item">
+                        <img alt="" class="About-Us__item-image" src="frontend/img/main/About%20Us/Group_1.svg">
+                        <div class="About-Us__item-title section-title">Large Assortment</div>
+                        <div class="About-Us__item-text section-text">we offer many different types of products with
+                            fewer variations in each category.
+                        </div>
+                    </li>
+                    <li class="About-Us__item">
+                        <img alt="" class="About-Us__item-image" src="frontend/img/main/About%20Us/Group_1_1.svg">
+                        <div class="About-Us__item-title section-title">Fast & Free Shipping</div>
+                        <div class="About-Us__item-text section-text">4-day or less delivery time, free shipping and an
+                            expedited delivery option.
+                        </div>
+                    </li>
+                    <li class="About-Us__item">
+                        <img alt="" class="About-Us__item-image" src="frontend/img/main/About%20Us/Group_1_2.svg">
+                        <div class="About-Us__item-title section-title">24/7 Support</div>
+                        <div class="About-Us__item-text section-text">answers to any business related inquiry 24/7 and
+                            in real-time.
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </section>
+        <section class="Categories">
+            <div class="Categories__content">
+                <div class="Categories__info">
+                    <h2 class="section-title">
+                        Categories
+                    </h2>
+                    <p class="section-text">
+                        Find what are you looking for
+                    </p>
+                </div>
+                <ul class="Categories__list">
+                    <li class="Categories__item up-48px left">
+                        <figure class="Categories-card">
+
+                            <img alt="" class="Categories-card__image" src="frontend/img/main/Categories/Frame_36.svg">
+
+                            <figcaption class="Categories-card__info">
+                                <span class="Categories-card__info-name"> Natural Plants</span>
+                            </figcaption>
+                        </figure>
+                    </li>
+
+                    <li class="Categories__item down-48px">
+                        <figure class="Categories-card">
+                            <img alt="" class="Categories-card__image" src="frontend/img/main/Categories/Frame_38.svg">
+
+                            <figcaption class="Categories-card__info">
+                                <span class="Categories-card__info-name"> Plant Accessories</span>
+
+                                <p class="Categories-card__info-description desktop">
+                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                                </p>
+                                <div class="button desktop">
+
+                                    <button class="Categories-card__info-button desktop">
+                                        <a class="Categories-card__info-link" href="#"> Explore <img
+                                                alt="arrow" class="Best-Selling__info-icon"
+                                                src="frontend/img/main/Best%20Selling%20/Vector-4.svg">
+                                        </a>
+                                    </button>
+                                </div>
+                            </figcaption>
+                        </figure>
+
+                    </li>
+                    <li class="Categories__item up-48px right">
+                        <figure class="Categories-card">
+                            <img alt="" class="Categories-card__image" src="frontend/img/main/Categories/Frame_37.svg">
+
+                            <figcaption class="Categories-card__info">
+                                <span class="Categories-card__info-name"> Artificial Plants</span>
+
+                                <p class="Categories-card__info-description mobile">
+                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                                </p>
+                                <div class="button">
+
+                                    <button class="Categories-card__info-button mobile">
+                                        <a class="Categories-card__info-link" href="#"> Explore <img
+                                                alt="arrow" class="Best-Selling__info-icon"
+                                                src="frontend/img/main/Best%20Selling%20/Vector-4.svg">
+                                        </a>
+                                    </button>
+
+                                </div>
+                            </figcaption>
+                        </figure>
+                    </li>
+                </ul>
+            </div>
+        </section>
+        <section class="What-sayAbout">
+            <div class="What-sayAbout__content">
+                <div class="What-sayAbout__info">
+                    <h2 class="section-title">What customers say about GREENMIND?</h2>
+                    <ul aria-label="Навигация по отзывам" class="What-sayAbout__nav">
+                        <li class="What-sayAbout__nav-item active"></li>
+                        <li class="What-sayAbout__nav-item"></li>
+                        <li class="What-sayAbout__nav-item"></li>
+                    </ul>
+                </div>
+                <div class="What-sayAbout__cards-wrapper">
+                    <div class="What-sayAbout__cards">
+                        <div class="What-sayAbout__card" id="review-1">
+                            <div class="What-sayAbout__card-text">
+                                Jorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate libero et velit
+                                interdum, ac aliquet odio mattis. Class aptent taciti sociosqu ad litora torquent per
+                                conubia nostra, per inceptos himenaeos.
+                            </div>
+                            <div class="What-sayAbout__card-person">
+                                <div class="What-sayAbout__card-person-img">
+                                    <img alt=""
+                                         src="frontend/img/main/What%20Say%20About/unsplash_5aGUyCW_PJw-removebg-preview.svg">
+                                </div>
+                                <div class="What-sayAbout__card-person-info">
+                                    <div class="What-sayAbout__card-person-name">John Doe
+                                    </div>
+                                    <div class="What-sayAbout__card-person-who">
+                                        Youtuber
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="What-sayAbout__card-rating">
+                                <div class="What-sayAbout__card-rating-star">
+                                    <img alt="" src="frontend/img/main/What%20Say%20About/StarFill.svg">
+                                </div>
+                                <div class="What-sayAbout__card-rating-text"> 4.5</div>
+                            </div>
+                        </div>
+                        <div class="What-sayAbout__card" id="review-2">
+                            <div class="What-sayAbout__card-text">
+                                Jorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate libero et velit
+                                interdum, ac aliquet odio mattis. Class aptent taciti sociosqu ad litora torquent per
+                                conubia nostra, per inceptos himenaeos.
+                            </div>
+                            <div class="What-sayAbout__card-person">
+                                <div class="What-sayAbout__card-person-img">
+                                    <img alt=""
+                                         src="frontend/img/main/What%20Say%20About/unsplash_5aGUyCW_PJw-removebg-preview.svg">
+                                </div>
+                                <div class="What-sayAbout__card-person-info">
+                                    <div class="What-sayAbout__card-person-name">John Doe
+                                    </div>
+                                    <div class="What-sayAbout__card-person-who">
+                                        Youtuber
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="What-sayAbout__card-rating">
+                                <div class="What-sayAbout__card-rating-star">
+                                    <img alt="" src="frontend/img/main/What%20Say%20About/StarFill.svg">
+                                </div>
+                                <div class="What-sayAbout__card-rating-text"> 4.5</div>
+                            </div>
+                        </div>
+                        <div class="What-sayAbout__card" id="review-3">
+                            <div class="What-sayAbout__card-text">
+                                Jorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate libero et velit
+                                interdum, ac aliquet odio mattis. Class aptent taciti sociosqu ad litora torquent per
+                                conubia nostra, per inceptos himenaeos.
+                            </div>
+                            <div class="What-sayAbout__card-person">
+                                <div class="What-sayAbout__card-person-img">
+                                    <img alt=""
+                                         src="frontend/img/main/What%20Say%20About/unsplash_5aGUyCW_PJw-removebg-preview.svg">
+                                </div>
+                                <div class="What-sayAbout__card-person-info">
+                                    <div class="What-sayAbout__card-person-name">John Doe
+                                    </div>
+                                    <div class="What-sayAbout__card-person-who">
+                                        Youtuber
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="What-sayAbout__card-rating">
+                                <div class="What-sayAbout__card-rating-star">
+                                    <img alt="" src="frontend/img/main/What%20Say%20About/StarFill.svg">
+                                </div>
+                                <div class="What-sayAbout__card-rating-text"> 4.5</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer class="footer">
+        <div class="footer__top">
+            <div class="footer-branding">
+                <h2 class="footer__logo"><a href="#">GREENMIND</a></h2>
+                <p class="footer__tagline">We help you find your dream plant</p>
+                <ul class="footer__social">
+                    <li><a class="social__link" href="#"><img alt="" src="frontend/img/footer/social/Group_11.svg"></a>
+                    </li>
+                    <li><a class="social__link" href="#"><img alt="" src="frontend/img/footer/social/Group_12.svg"></a>
+                    </li>
+                    <li><a class="social__link" href="#"><img alt="" src="frontend/img/footer/social/Group_13.svg"></a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="footer__nav">
+                <ul class="footer__nav-list">
+                    <li class="footer__nav-item non-clickable">Information</li>
+                    <li class="footer__nav-item"><a href="#">About</a></li>
+                    <li class="footer__nav-item"><a href="#">Product</a></li>
+                    <li class="footer__nav-item"><a href="#">Blog</a></li>
+                </ul>
+                <ul class="footer__nav-list">
+                    <li class="footer__nav-item non-clickable">Company</li>
+                    <li class="footer__nav-item"><a href="#">Community</a></li>
+                    <li class="footer__nav-item"><a href="#">Career</a></li>
+                    <li class="footer__nav-item"><a href="#">Our story</a></li>
+                </ul>
+                <ul class="footer__nav-list">
+                    <li class="footer__nav-item non-clickable">Contact</li>
+                    <li class="footer__nav-item"><a href="#">Getting Started</a></li>
+                    <li class="footer__nav-item"><a href="#">Pricing</a></li>
+                    <li class="footer__nav-item"><a href="#">Resources</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer__legal">
+            <small>2023 all Right Reserved Term of use GREENMIND</small>
+        </div>
+    </footer>
+</div>
+<script defer src="frontend/js"></script>
+<script defer src="frontend/js/hero-search-animation.js"></script>
+<script defer src="frontend/js/change-placeholder.js"></script>
+<script defer src="frontend/js/modal.js"></script>
+<script defer src="frontend/js/burger-menu.js"></script>
+</body>
+</html>
+
