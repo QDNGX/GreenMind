@@ -36,3 +36,4 @@ frontend/build/
 
 # backend
 backend/src/main/resources/static/
+backend/src/main/resources/application-db.properties
