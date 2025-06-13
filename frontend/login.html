@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width,initial-scale=1" name="viewport">
+    <title>Регистрация GreenMind</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet">
+    <link href="css/reset.css" rel="stylesheet">
+    <link href="css/register-login.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="auth-card">
+    <div class="logo"><a href="../index.html">GREENMIND</a></div>
+    <h2 class="auth-title">Вход</h2>
+
+    <form id="signup-form" novalidate>
+        <label>
+            Email
+            <input autocomplete="username" name="email" required type="email">
+        </label>
+
+        <label>
+            Пароль
+            <span class="password-wrap">
+                <input autocomplete="new-password" id="pass" minlength="8" name="password" required type="password">
+            </span>
+        </label>
+
+        <button class="btn-primary" type="submit">Вход</button>
+    </form>
+
+    <p class="alt">Нет аккаунта? <a href="register.html">Регистрация</a></p>
+
+</div>
+
+<script>
+    const toggle = document.getElementById('passToggle')
+    const pass = document.getElementById('pass')
+    toggle.addEventListener('click', () => {
+        pass.type = pass.type === 'password' ? 'text' : 'password'
+    })
+    document.getElementById('signup-form').addEventListener('submit', e => {
+        e.preventDefault()
+        alert('Регистрация пока не подключена')
+    })
+</script>
+</body>
+</html>
