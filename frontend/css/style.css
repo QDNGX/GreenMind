@@ -139,19 +139,25 @@ main {
 #login-modal {
     position: fixed;
     inset: 0;
-    display: grid;
-    place-content: center;
-    background: #0005;
-    backdrop-filter: blur(4px);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity .3s ease;
-    z-index: 2000;
+    display: none;
 }
 
 #login-modal.active {
-    opacity: 1;
-    pointer-events: auto;
+    display: grid;
+    animation: fade-in .3s forwards ease;
+    place-content: center;
+    background: #0005;
+    backdrop-filter: blur(4px);
+    z-index: 2000;
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
 #login-box {
@@ -296,25 +302,22 @@ main {
     left: 50%;
     /* первоначально спрятано (scale ↓ + 0 α) */
     transform: translate(-50%, -50%) scale(.9);
-    opacity: 0;
-    transition: transform .3s, opacity .3s;
-    z-index: 1000;
+    display: none;
+}
 
+.side-nav.show {
+    display: flex;
+    flex-direction: column;
+    animation: fade-in .3s forwards ease;
+    transform: translate(-50%, -50%) scale(1);
+    z-index: 1000;
     width: clamp(260px, 90vw, 400px);
     max-height: 90vh;
     background: #fff;
     border-radius: 12px;
     box-shadow: 0 12px 32px rgba(0, 0, 0, .2);
-
-    display: flex;
-    flex-direction: column;
     padding: 1.5rem;
     overflow-y: auto;
-}
-
-.side-nav.show {
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 1;
 }
 
 .side-nav ul {
