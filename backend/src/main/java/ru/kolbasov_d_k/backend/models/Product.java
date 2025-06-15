@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "products")
-public class Products {
+public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,7 +28,7 @@ public class Products {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    public Products() {
+    public Product() {
     }
 
     public Integer getId() {
