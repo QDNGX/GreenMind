@@ -6,7 +6,7 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.5.0</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath/>
     </parent>
     <groupId>ru.kolbasov_d_k</groupId>
     <artifactId>backend</artifactId>
@@ -87,29 +87,42 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
-			<plugin>
-				<artifactId>maven-resources-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>copy-frontend</id>
-						<phase>process-resources</phase>
-						<goals><goal>copy-resources</goal></goals>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-frontend</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
 
-						<configuration>
-							<outputDirectory>${project.build.outputDirectory}/static</outputDirectory>
-							<resources>
-								<resource>
-									<directory>${project.basedir}/../frontend</directory>
-									<excludes>
-										<exclude>**/.idea/**</exclude>
-										<exclude>**/.gitignore</exclude>
-									</excludes>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
+                        <configuration>
+
+                            <outputDirectory>${project.build.outputDirectory}/static</outputDirectory>
+
+                            <resources>
+                                <resource>
+                                    <directory>${project.basedir}/../frontend</directory>
+                                    <targetPath>frontend</targetPath>
+                                    <excludes>
+                                        <exclude>**/.idea/**</exclude>
+                                        <exclude>**/.gitignore</exclude>
+                                    </excludes>
+                                </resource>
+
+                                <resource>
+                                    <directory>${project.basedir}/..</directory>
+                                    <includes>
+                                        <include>index.html</include>
+                                    </includes>
+                                </resource>
+
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
