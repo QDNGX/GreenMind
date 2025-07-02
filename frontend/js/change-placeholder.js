@@ -1,12 +1,12 @@
-(function (){
-    const input = document.getElementById("hero-search");
+(function () {
+    const input = document.getElementById("Hero-Search");
     const desktopText = 'What are you looking for?';
     const mobileText = 'Search plants';
 
-    function updatePlaceholder(e){
-        if(e.matches){
+    function updatePlaceholder(e) {
+        if (e.matches) {
             input.placeholder = mobileText;
-        }else{
+        } else {
             input.placeholder = desktopText;
         }
     }
