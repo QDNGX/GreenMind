@@ -77,6 +77,11 @@ input {
     position: relative;
 }
 
+.password-wrap input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
 .toggle-pass {
     position: absolute;
     right: .75rem;
