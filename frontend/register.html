@@ -16,10 +16,10 @@
     <div class="logo"><a href="../index.html">GREENMIND</a></div>
     <h2 class="auth-title">Создать аккаунт</h2>
 
-    <form id="signup-form" novalidate>
+    <form action="/register" id="signup-form" method="post" novalidate>
         <label>
             Имя
-            <input type="text" name="username" required>
+            <input name="username" required type="text">
         </label>
         <label>
             Email
@@ -48,15 +48,35 @@
 </div>
 
 <script>
-    const toggle = document.getElementById('passToggle')
-    const pass = document.getElementById('pass')
-    toggle.addEventListener('click', () => {
-        pass.type = pass.type === 'password' ? 'text' : 'password'
-    })
-    document.getElementById('signup-form').addEventListener('submit', e => {
-        e.preventDefault()
-        alert('Регистрация пока не подключена')
-    })
+    document.getElementById('signup-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const data = {
+            username: form.username.value,
+            email: form.email.value,
+            password: form.password.value,
+        };
+
+        try {
+            const response = await fetch('/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+                window.location.href = '/frontend/login.html';
+            } else {
+                const err = await response.text();
+                alert("Ошибка регистрации: " + err);
+            }
+        } catch (error) {
+            alert('Ошибка соединения с сервером!');
+        }
+    });
+
 </script>
 </body>
 </html>
