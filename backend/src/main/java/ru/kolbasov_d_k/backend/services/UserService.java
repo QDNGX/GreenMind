@@ -6,10 +6,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.kolbasov_d_k.backend.dto.UserDTO;
+import ru.kolbasov_d_k.backend.models.Role;
 import ru.kolbasov_d_k.backend.models.User;
 import ru.kolbasov_d_k.backend.repositories.UserRepository;
 
-import java.time.LocalDateTime;
 
 @Service
 public class UserService {
@@ -40,8 +40,7 @@ public class UserService {
         user.setUsername(userDTO.getUsername());
         user.setEmail(userDTO.getEmail());
         user.setPasswordHash(passwordEncoder.encode(userDTO.getPassword()));
-        user.setCreatedAt(LocalDateTime.now());
-        user.setUpdatedAt(LocalDateTime.now());
+        user.setRole(Role.USER);
         userRepository.save(user);
     }
 

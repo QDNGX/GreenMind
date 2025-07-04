@@ -2,10 +2,17 @@ package ru.kolbasov_d_k.backend.models;
 
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
+@EntityListeners(AuditingEntityListener.class)
 @Entity
 @Table(name = "users")
 public class User {
@@ -27,11 +34,18 @@ public class User {
     @Column(name = "birth_date")
     private LocalDate birthDate;
 
+    @CreatedDate
     @Column(name = "created_at", updatable = false, nullable = false)
     private LocalDateTime createdAt;
 
+    @LastModifiedDate
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
+
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
+    private Role role;
 
     public User() {
     }
@@ -90,5 +104,13 @@ public class User {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 }
