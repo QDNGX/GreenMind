@@ -16,7 +16,7 @@
     <div class="logo"><a href="../index.html">GREENMIND</a></div>
     <h2 class="auth-title">Вход</h2>
 
-    <form action="/login" id="signup-form" method="post" novalidate>
+    <form action="/login" id="signing-form" method="post" novalidate>
         <label>
             Email
             <input autocomplete="username" name="email" required type="email">
@@ -28,6 +28,8 @@
                 <input autocomplete="new-password" id="pass" minlength="8" name="password" required type="password">
             </span>
         </label>
+
+        <input name="redirect" type="hidden" value="/">
 
         <button class="btn-primary" type="submit">Вход</button>
     </form>

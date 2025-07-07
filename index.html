@@ -58,7 +58,7 @@
     <div aria-hidden="true" id="login-modal">
         <div aria-labelledby="login-title" aria-modal="true" id="login-box" role="dialog">
             <h2 id="login-title">Вход на сайт</h2>
-            <form id="login-form">
+            <form action="/login" id="login-form" method="post">
                 <label>
                     Email
                     <input autocomplete="username" name="email" placeholder="you@example.com" required type="email">
@@ -68,6 +68,11 @@
                     <input autocomplete="current-password" name="password" placeholder="••••••••" required
                            type="password">
                 </label>
+
+                <input name="redirect" type="hidden" value="frontend/profile.html">
+
+                <p hidden id="login-error" style="color:#ff5555;margin:0 0 8px"></p>
+
                 <button type="submit">Войти</button>
                 <p class="login-note"> Нет аккаунта? <a class="register-btn" href="frontend/register.html">Зарегистрироваться</a>
                 </p>
@@ -93,7 +98,7 @@
                         <div class="hero-search__stats-item__label">Customers</div>
                     </div>
                 </div>
-                <form action="search" class="hero-search__form" role="search">
+                <form action="/search" class="hero-search__form" role="search">
                     <label class="hero-search__label sr-only" for="hero-search">Search</label>
 
                     <input
