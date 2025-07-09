@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
@@ -13,14 +13,40 @@
 </head>
 <body>
 <div class="wrapper">
-
-
     <header class="header">
-        <img alt="" class="hero-bg" src="img/profile/header/scenic-view-sky-sunrise_1048944-27468973.avif">
-
+        <img alt="" aria-hidden="true" class="hero-bg"
+             src="img/profile/header/scenic-view-sky-sunrise_1048944-27468973.avif">
     </header>
-    <main>
-        Привет
+    <main class="container profile-page">
+        <section aria-labelledby="user‑name" class="profile-info">
+            <figure class="profile-photo">
+                <img alt="Аватар пользователя Иван Иванов" height="128" loading="lazy"
+                     src="img/profile/main/profile/profile avatar.png"
+                     width="128">
+            </figure>
+            <dl class="profile-details">
+                <dt>Имя</dt>
+                <dd>Иван Иванов</dd>
+                <dd class="actions">
+                    <button aria-label="Изменить имя" class="btn-edit" type="button">Изменить</button>
+                </dd>
+
+                <dt>Электронная&nbsp;почта</dt>
+                <dd>ivan@example.com</dd>
+                <dd class="actions">
+                    <button aria-label="Изменить электронную почту" class="btn-edit" type="button">Изменить</button>
+                </dd>
+                <dt>Дата&nbsp;рождения</dt>
+                <dd>15&nbsp;мая&nbsp;2001</dd>
+                <dd class="actions">
+                    <button aria-label="Изменить дату рождения" class="btn-edit" type="button">Изменить</button>
+                </dd>
+            </dl>
+        </section>
+        <h2 class="section-title cart-heading" id="cart-title">Корзина</h2>
+        <hr aria-hidden="true" class="section-divider">
+
+        <!-- содержимое корзины (будет добавлено позже) -->
     </main>
 
     <footer class="footer">
@@ -29,11 +55,14 @@
                 <h2 class="footer__logo"><a href="#">GREENMIND</a></h2>
                 <p class="footer__tagline">We help you find your dream plant</p>
                 <ul class="footer__social">
-                    <li><a class="social__link" href="#"><img alt="" src="img/index/footer/social/Group_11.svg"></a>
+                    <li><a class="social__link" href="#"><img alt=""
+                                                              src="/frontend/img/index/footer/social/Group_11.svg"></a>
                     </li>
-                    <li><a class="social__link" href="#"><img alt="" src="img/index/footer/social/Group_12.svg"></a>
+                    <li><a class="social__link" href="#"><img alt=""
+                                                              src="/frontend/img/index/footer/social/Group_12.svg"></a>
                     </li>
-                    <li><a class="social__link" href="#"><img alt="" src="img/index/footer/social/Group_13.svg"></a>
+                    <li><a class="social__link" href="#"><img alt=""
+                                                              src="/frontend/img/index/footer/social/Group_13.svg"></a>
                     </li>
                 </ul>
             </div>
@@ -66,4 +95,3 @@
 </div>
 </body>
 </html>
-
