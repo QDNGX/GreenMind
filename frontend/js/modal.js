@@ -111,6 +111,7 @@
             const res = await fetch('/login', {
                 method: 'POST',
                 body: new FormData(form),
+                headers: {"X-Requested-With": "XMLHttpRequest"},
                 credentials: 'same-origin'
             });
             if (res.redirected) {
