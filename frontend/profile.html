@@ -16,6 +16,11 @@
     <header class="header">
         <img alt="" aria-hidden="true" class="hero-bg"
              src="img/profile/header/scenic-view-sky-sunrise_1048944-27468973.avif">
+        <div class="logout-container">
+            <button aria-label="Выйти" class="btn-log-out" id="logout-btn" type="button">
+                <img alt="" src="img/profile/header/logout.png"/>
+            </button>
+        </div>
     </header>
     <main class="container profile-page">
         <section aria-labelledby="user‑name" class="profile-info">
@@ -26,27 +31,30 @@
             </figure>
             <dl class="profile-details">
                 <dt>Имя</dt>
-                <dd>Иван Иванов</dd>
+                <dd id="profile-username"></dd>
                 <dd class="actions">
                     <button aria-label="Изменить имя" class="btn-edit" type="button">Изменить</button>
                 </dd>
 
                 <dt>Электронная&nbsp;почта</dt>
-                <dd>ivan@example.com</dd>
+                <dd id="profile-email"></dd>
                 <dd class="actions">
                     <button aria-label="Изменить электронную почту" class="btn-edit" type="button">Изменить</button>
                 </dd>
                 <dt>Дата&nbsp;рождения</dt>
-                <dd>15&nbsp;мая&nbsp;2001</dd>
+                <dd id="profile-birthdate"></dd>
                 <dd class="actions">
                     <button aria-label="Изменить дату рождения" class="btn-edit" type="button">Изменить</button>
                 </dd>
             </dl>
-        </section>
-        <h2 class="section-title cart-heading" id="cart-title">Корзина</h2>
-        <hr aria-hidden="true" class="section-divider">
 
-        <!-- содержимое корзины (будет добавлено позже) -->
+        </section>
+        <div class="cart">
+            <h2 class="section-title cart-heading" id="cart-title">Корзина</h2>
+            <hr aria-hidden="true" class="section-divider">
+        </div>
+
+
     </main>
 
     <footer class="footer">
@@ -92,6 +100,34 @@
             <small>2023 all Right Reserved Term of use GREENMIND</small>
         </div>
     </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const response = await fetch('/api/profile', {
+                    method: 'GET',
+                    credentials: 'same-origin'
+                });
+                if (!response.ok) {
+                    console.error('Ошибка сервера при получении профиля: ', response.status);
+                    return;
+                }
+
+                const data = await response.json();
+
+                document.getElementById('profile-username').textContent = data.username || '';
+                document.getElementById('profile-email').textContent = data.email || '';
+                document.getElementById('profile-birthdate').textContent = data.birthDate || '';
+            } catch (err) {
+                console.error('Не удалось загрузить профиль: ', err)
+            }
+        });
+        document.getElementById('logout-btn').addEventListener('click', async () => {
+            await fetch('/logout', {method: 'POST', credentials: 'same-origin'});
+            window.location.href = '/index.html';
+        });
+
+    </script>
 </div>
 </body>
 </html>

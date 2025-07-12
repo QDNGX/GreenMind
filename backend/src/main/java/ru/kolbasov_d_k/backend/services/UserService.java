@@ -2,13 +2,15 @@ package ru.kolbasov_d_k.backend.services;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.kolbasov_d_k.backend.dto.UserDTO;
 import ru.kolbasov_d_k.backend.models.Role;
 import ru.kolbasov_d_k.backend.models.User;
 import ru.kolbasov_d_k.backend.repositories.UserRepository;
+
+import java.security.Principal;
 
 
 @Service
@@ -18,9 +20,9 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
-        this.passwordEncoder = new BCryptPasswordEncoder();
+        this.passwordEncoder = passwordEncoder;
     }
 
     public User findById(Integer id) {
@@ -35,6 +37,14 @@ public class UserService {
         return userRepository.existsByEmail(email);
     }
 
+    public User getCurrentUser(Principal principal) {
+        if(principal == null) {
+            throw new IllegalArgumentException("User is not logged in");
+        }
+        return findByEmail(principal.getName());
+    }
+
+    @Transactional
     public void create(UserDTO userDTO) {
         User user = new User();
         user.setUsername(userDTO.getUsername());
