@@ -49,10 +49,15 @@
             </dl>
 
         </section>
-        <div class="cart">
+        <section class="cart">
             <h2 class="section-title cart-heading" id="cart-title">Корзина</h2>
             <hr aria-hidden="true" class="section-divider">
-        </div>
+            <ul class="orders-list" id="orders-list"></ul>
+            <div class="no-orders" id="no-orders">
+                <p class="no-orders__text">У&nbsp;вас&nbsp;пока&nbsp;нет&nbsp;заказов</p>
+                <div class="no-orders__plus"></div>
+            </div>
+        </section>
 
 
     </main>
@@ -118,6 +123,39 @@
                 document.getElementById('profile-username').textContent = data.username || '';
                 document.getElementById('profile-email').textContent = data.email || '';
                 document.getElementById('profile-birthdate').textContent = data.birthDate || '';
+                const orders = Array.isArray(data.orders) ? data.orders : [];
+                const listElm = document.getElementById('orders-list');
+                const noOrdersEl = document.getElementById('no-orders');
+
+                if (orders.length === 0) {
+                    noOrdersEl.style.display = 'block';
+                    return;
+                }
+                noOrdersEl.style.display = 'none';
+
+                orders.forEach(o => {
+                    const li = document.createElement('li');
+                    li.className = 'order-card';
+
+                    const img = document.createElement('img');
+                    img.className = 'order-card__img';
+                    img.src = o.imagePath || '/img/placeholder.png';
+                    img.alt = o.productName;
+
+                    const info = document.createElement('div');
+                    info.className = 'order-card__info';
+                    info.innerHTML = `
+        <p class="order-card__name">${o.productName}</p>
+        <p class="order-card__price">${o.price.toLocaleString()} ₽ × ${o.quantity}</p>`;
+
+                    li.append(img, info);
+                    listElm.appendChild(li);
+                });
+                const addLi = document.createElement('li');
+                addLi.className = 'add-card';
+                addLi.innerHTML = '<div class="add-card__plus"></div>';
+                addLi.addEventListener('click', () => location.href = '/catalog');
+                listElm.appendChild(addLi);
             } catch (err) {
                 console.error('Не удалось загрузить профиль: ', err)
             }

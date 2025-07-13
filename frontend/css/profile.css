@@ -56,6 +56,169 @@ main {
     padding-top: calc(var(--pf-avatar-s) * 0.55 + .4rem);
 }
 
+.orders-list {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0 3rem;
+    font-size: 1.6rem;
+}
+
+.orders-list li {
+    margin: .5rem 0;
+}
+
+.cart .no-orders {
+    display: none;
+
+    width: 100%;
+    min-height: 500px;
+    box-sizing: border-box;
+    margin: 0;
+
+    position: relative;
+    cursor: pointer;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding-top: 2rem;
+
+    border: 4px solid #b9e1e1;
+    border-radius: 12px;
+    background: #ffffff;
+    transition: background-color .2s, border-color .2s;
+    text-align: center;
+}
+
+.cart .no-orders:hover {
+    background: #f8fdfd;
+    border-color: #9ec7c7;
+}
+
+.no-orders__text {
+    font-size: 4rem;
+    font-weight: 800;
+    color: #b9e1e1;
+    line-height: 1.15;
+    pointer-events: none;
+}
+
+.no-orders__plus {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0;
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    background: #b9e1e1;
+    pointer-events: none;
+}
+
+.no-orders__plus::before,
+.no-orders__plus::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 50%;
+    height: 6px;
+    background: #ffffff;
+    transform: translate(-50%, -50%);
+    border-radius: 3px;
+}
+
+.no-orders__plus::after {
+    transform: translate(-50%, -50%) rotate(90deg);
+}
+
+.orders-list {
+    display: grid;
+    grid-template-columns:repeat(auto-fill, minmax(240px, 1fr));
+    gap: 2rem;
+}
+
+.order-card {
+    width: 100%;
+    aspect-ratio: 3/4;
+    border: 2px solid #b9e1e1;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+}
+
+.order-card__img {
+    width: 100%;
+    height: 65%;
+    object-fit: cover;
+}
+
+.order-card__info {
+    flex: 1 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: .4rem;
+    padding: 1rem 1.2rem 1.6rem;
+}
+
+.order-card__name {
+    font: 600 1.4rem/1.3 "Poppins", sans-serif;
+    color: #222;
+}
+
+.order-card__price {
+    font: 500 1.3rem/1 "Poppins", sans-serif;
+    color: #666;
+}
+
+.add-card {
+    width: 100%;
+    aspect-ratio: 3/4;
+    border: 2px solid #b9e1e1;
+    border-radius: 12px;
+    background: #fff;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color .2s, border-color .2s;
+}
+
+.add-card:hover {
+    background: #f8fdfd;
+    border-color: #9ec7c7;
+}
+
+.add-card__plus {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: #b9e1e1;
+    position: relative;
+}
+
+.add-card__plus::before,
+.add-card__plus::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 50%;
+    height: 6px;
+    background: #fff;
+    transform: translate(-50%, -50%);
+    border-radius: 3px;
+}
+
+.add-card__plus::after {
+    transform: translate(-50%, -50%) rotate(90deg);
+}
+
 .avatar {
     position: absolute;
     top: calc(var(--pf-avatar-s) * -0.7);
