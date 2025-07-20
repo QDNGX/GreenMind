@@ -25,7 +25,7 @@
     <main class="container profile-page">
         <section aria-labelledby="user‑name" class="profile-info">
             <figure class="profile-photo">
-                <img alt="Аватар пользователя Иван Иванов" height="128" loading="lazy"
+                <img alt="Аватар пользователя" height="128" loading="lazy"
                      src="img/profile/main/profile/profile avatar.png"
                      width="128">
             </figure>
@@ -33,21 +33,33 @@
                 <dt>Имя</dt>
                 <dd id="profile-username"></dd>
                 <dd class="actions">
-                    <button aria-label="Изменить имя" class="btn-edit" type="button">Изменить</button>
+                    <button aria-label="Изменить имя"
+                            class="btn-edit"
+                            data-field="username"
+                            type="button">Изменить
+                    </button>
                 </dd>
 
                 <dt>Электронная&nbsp;почта</dt>
                 <dd id="profile-email"></dd>
                 <dd class="actions">
-                    <button aria-label="Изменить электронную почту" class="btn-edit" type="button">Изменить</button>
+                    <button aria-label="Изменить электронную почту"
+                            class="btn-edit"
+                            data-field="email"
+                            type="button">Изменить
+                    </button>
                 </dd>
+
                 <dt>Дата&nbsp;рождения</dt>
                 <dd id="profile-birthdate"></dd>
                 <dd class="actions">
-                    <button aria-label="Изменить дату рождения" class="btn-edit" type="button">Изменить</button>
+                    <button aria-label="Изменить дату рождения"
+                            class="btn-edit"
+                            data-field="birthdate"
+                            type="button">Изменить
+                    </button>
                 </dd>
             </dl>
-
         </section>
         <section class="cart">
             <h2 class="section-title cart-heading" id="cart-title">Корзина</h2>
@@ -58,7 +70,42 @@
                 <div class="no-orders__plus"></div>
             </div>
         </section>
+        <div aria-hidden="true" class="hidden" id="modal">
+            <div aria-modal="true" class="modal__dialog" role="dialog">
+                <h2 class="modal__title">Добавить товар</h2>
 
+                <label class="modal__label">
+                    Товар:
+                    <select class="modal__select" id="product-select"></select>
+                </label>
+
+                <label class="modal__label">
+                    Кол‑во:
+                    <input autocomplete="off" class="modal__input" id="qty-input" inputmode="numeric" type="text">
+                </label>
+
+                <p class="modal__total" id="total-price">Итого: —</p>
+
+                <div class="modal__actions">
+                    <button class="modal__btn modal__btn_cancel" id="cancel-btn">Отмена</button>
+                    <button class="modal__btn modal__btn_ok" disabled id="confirm-btn">Добавить</button>
+                </div>
+            </div>
+        </div>
+
+        <div aria-hidden="true" class="hidden" id="profile-modal">
+            <div aria-modal="true" class="modal__dialog" role="dialog">
+                <h2 class="modal__title" id="profile-modal-title"></h2>
+
+                <label class="modal__label" id="profile-modal-label">
+                </label>
+
+                <div class="modal__actions">
+                    <button class="modal__btn modal__btn_cancel" id="profile-cancel">Отмена</button>
+                    <button class="modal__btn modal__btn_ok" disabled id="profile-save">Сохранить</button>
+                </div>
+            </div>
+        </div>
 
     </main>
 
@@ -79,7 +126,6 @@
                     </li>
                 </ul>
             </div>
-
             <div class="footer__nav">
                 <ul class="footer__nav-list">
                     <li class="footer__nav-item non-clickable">Information</li>
@@ -105,66 +151,255 @@
             <small>2023 all Right Reserved Term of use GREENMIND</small>
         </div>
     </footer>
-
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
             try {
-                const response = await fetch('/api/profile', {
-                    method: 'GET',
-                    credentials: 'same-origin'
-                });
+                const response = await fetch('/api/profile', {credentials: 'same-origin'});
                 if (!response.ok) {
-                    console.error('Ошибка сервера при получении профиля: ', response.status);
+                    console.error('Ошибка профиля', response.status);
                     return;
                 }
-
                 const data = await response.json();
 
                 document.getElementById('profile-username').textContent = data.username || '';
                 document.getElementById('profile-email').textContent = data.email || '';
                 document.getElementById('profile-birthdate').textContent = data.birthDate || '';
-                const orders = Array.isArray(data.orders) ? data.orders : [];
-                const listElm = document.getElementById('orders-list');
-                const noOrdersEl = document.getElementById('no-orders');
-
-                if (orders.length === 0) {
-                    noOrdersEl.style.display = 'block';
-                    return;
-                }
-                noOrdersEl.style.display = 'none';
-
-                orders.forEach(o => {
-                    const li = document.createElement('li');
-                    li.className = 'order-card';
-
-                    const img = document.createElement('img');
-                    img.className = 'order-card__img';
-                    img.src = o.imagePath || '/img/placeholder.png';
-                    img.alt = o.productName;
-
-                    const info = document.createElement('div');
-                    info.className = 'order-card__info';
-                    info.innerHTML = `
-        <p class="order-card__name">${o.productName}</p>
-        <p class="order-card__price">${o.price.toLocaleString()} ₽ × ${o.quantity}</p>`;
-
-                    li.append(img, info);
-                    listElm.appendChild(li);
-                });
-                const addLi = document.createElement('li');
-                addLi.className = 'add-card';
-                addLi.innerHTML = '<div class="add-card__plus"></div>';
-                addLi.addEventListener('click', () => location.href = '/catalog');
-                listElm.appendChild(addLi);
-            } catch (err) {
-                console.error('Не удалось загрузить профиль: ', err)
+                renderOrders(Array.isArray(data.orders) ? data.orders : []);
+            } catch (e) {
+                console.error(e);
             }
         });
-        document.getElementById('logout-btn').addEventListener('click', async () => {
-            await fetch('/logout', {method: 'POST', credentials: 'same-origin'});
-            window.location.href = '/index.html';
-        });
 
+        document.getElementById('logout-btn')
+            .addEventListener('click', async () => {
+                await fetch('/logout', {method: 'POST', credentials: 'same-origin'});
+                window.location.href = '/index.html';
+            });
+
+        const listElm = document.getElementById('orders-list');
+        const noOrdersEl = document.getElementById('no-orders');
+
+        function renderOrders(orders) {
+            listElm.innerHTML = '';
+            if (!orders.length) {
+                noOrdersEl.style.display = 'flex';
+                return;
+            }
+            noOrdersEl.style.display = 'none';
+
+            orders.forEach(o => {
+                const li = document.createElement('li');
+                li.className = 'order-card';
+                li.innerHTML = `
+                    <img class="order-card__img" src="${o.imagePath || '/img/placeholder.png'}" alt="${o.productName}">
+                    <div class="order-card__info">
+                        <p class="order-card__name">${o.productName}</p>
+                        <p class="order-card__price">${o.price.toLocaleString()} ₽ × ${o.quantity}</p>
+                    </div>`;
+                listElm.appendChild(li);
+            });
+            const addLi = document.createElement('li');
+            addLi.className = 'add-card';
+            addLi.innerHTML = '<div class="add-card__plus"></div>';
+            addLi.addEventListener('click', openModal);
+            listElm.appendChild(addLi);
+        }
+
+        const modal = document.getElementById('modal');
+        const cancelBtn = document.getElementById('cancel-btn');
+        const confirmBtn = document.getElementById('confirm-btn');
+        const addBtnEmpty = document.querySelector('.no-orders');
+        const selectEl = document.getElementById('product-select');
+        const qtyInput = document.getElementById('qty-input');
+        const totalPriceEl = document.getElementById('total-price');
+
+        let productsCache = [];
+
+        addBtnEmpty.addEventListener('click', openModal);
+        cancelBtn.addEventListener('click', hideModal);
+        selectEl.addEventListener('change', updateTotal);
+        qtyInput.addEventListener('input', updateTotal);
+        confirmBtn.addEventListener('click', sendAddToCart);
+
+        async function openModal() {
+            if (productsCache.length === 0) {
+                const r = await fetch('/api/cart');
+                if (!r.ok) {
+                    alert('Не удалось получить товары');
+                    return;
+                }
+                productsCache = (await r.json()).filter(p => p.quantity > 0);
+                rebuildSelectOptions();
+            }
+            if (!productsCache.length) {
+                alert('Все товары распроданы');
+                return;
+            }
+
+            selectEl.selectedIndex = 0;
+            qtyInput.value = '';
+            updateTotal();
+
+            modal.classList.remove('hidden');
+            modal.setAttribute('aria-hidden', 'false');
+            qtyInput.focus();
+        }
+
+        function hideModal() {
+            modal.classList.add('hidden');
+            modal.setAttribute('aria-hidden', 'true');
+        }
+
+        function rebuildSelectOptions() {
+            selectEl.innerHTML = '';
+            productsCache.forEach(p => {
+                const text = `${p.name} — ${p.price} ₽ (остаток ${p.quantity})`;
+                selectEl.add(new Option(text, p.id));
+            });
+        }
+
+        function updateTotal() {
+            qtyInput.value = qtyInput.value.replace(/\D/g, '');
+            const id = Number(selectEl.value);
+            const product = productsCache.find(p => p.id === id);
+            if (!product || qtyInput.value === '') {
+                totalPriceEl.textContent = 'Итого: —';
+                confirmBtn.disabled = true;
+                return;
+            }
+            let qty = Math.min(parseInt(qtyInput.value, 10), product.quantity);
+            qty = Math.max(qty, 1);
+            qtyInput.value = qty;
+            totalPriceEl.textContent = `Итого: ${(product.price * qty).toLocaleString()} ₽`;
+            confirmBtn.disabled = false;
+        }
+
+        async function sendAddToCart() {
+            const id = Number(selectEl.value);
+            const qty = Number(qtyInput.value);
+            if (!qty) {
+                return;
+            }
+
+            try {
+                const r = await fetch('/api/cart', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({id, quantity: qty})
+                });
+                if (r.status === 409) {
+                    alert('Недостаточно товара');
+                    return;
+                }
+                if (!r.ok) throw new Error(r.status);
+
+                renderOrders(await r.json());
+
+                const prod = productsCache.find(p => p.id === id);
+                if (prod) {
+                    prod.quantity -= qty;
+                    if (prod.quantity <= 0) {
+                        productsCache = productsCache.filter(p => p.id !== id);
+                    }
+                    rebuildSelectOptions();
+                }
+            } catch (e) {
+                console.error(e);
+                alert('Ошибка добавления');
+            } finally {
+                hideModal();
+            }
+        }
+
+        const profileModal = document.getElementById('profile-modal');
+        const profCancelBtn = document.getElementById('profile-cancel');
+        const profSaveBtn = document.getElementById('profile-save');
+        const profTitle = document.getElementById('profile-modal-title');
+        const profLabel = document.getElementById('profile-modal-label');
+
+        let currentField = null;  // 'username' | 'email' | 'birthdate'
+        let inputEl = null;
+
+        document.querySelectorAll('.btn-edit').forEach(btn => {
+            btn.addEventListener('click', () => openEditModal(btn.dataset.field));
+        });
+        profCancelBtn.addEventListener('click', hideEditModal);
+        profSaveBtn.addEventListener('click', saveProfileField);
+
+        function openEditModal(field) {
+            currentField = field;
+            const currentValue = document.getElementById('profile-' + field).textContent.trim();
+
+            inputEl = document.createElement('input');
+            inputEl.className = 'modal__input';
+            inputEl.value = currentValue;
+            inputEl.addEventListener('input', validateProfileInput);
+
+            switch (field) {
+                case 'username':
+                    profTitle.textContent = 'Изменить имя';
+                    inputEl.type = 'text';
+                    inputEl.maxLength = 50;
+                    break;
+                case 'email':
+                    profTitle.textContent = 'Изменить e‑mail';
+                    inputEl.type = 'email';
+                    break;
+                case 'birthdate':
+                    profTitle.textContent = 'Изменить дату рождения';
+                    inputEl.type = 'date';
+                    break;
+            }
+            profLabel.innerHTML = '';
+            profLabel.appendChild(inputEl);
+
+            validateProfileInput();
+
+            profileModal.classList.remove('hidden');
+            profileModal.setAttribute('aria-hidden', 'false');
+            inputEl.focus();
+        }
+
+        function hideEditModal() {
+            profileModal.classList.add('hidden');
+            profileModal.setAttribute('aria-hidden', 'true');
+            currentField = null;
+            inputEl = null;
+        }
+
+        function validateProfileInput() {
+            let valid = false;
+            if (!inputEl) return;
+
+            if (currentField === 'username') {
+                valid = inputEl.value.trim().length >= 2;
+            } else if (currentField === 'email') {
+                valid = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(inputEl.value.trim());
+            } else if (currentField === 'birthdate') {
+                valid = inputEl.value !== '';
+            }
+            profSaveBtn.disabled = !valid;
+        }
+
+        async function saveProfileField() {
+            if (!currentField || !inputEl) return;
+
+            const value = inputEl.value.trim();
+            try {
+                const r = await fetch('/api/profile', {
+                    method: 'PATCH',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({[currentField]: value})
+                });
+                if (!r.ok) throw new Error(r.status);
+
+                document.getElementById('profile-' + currentField).textContent = value;
+                hideEditModal();
+            } catch (e) {
+                console.error(e);
+                alert('Ошибка сохранения');
+            }
+        }
     </script>
 </div>
 </body>
