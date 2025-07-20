@@ -317,7 +317,7 @@
         const profTitle = document.getElementById('profile-modal-title');
         const profLabel = document.getElementById('profile-modal-label');
 
-        let currentField = null;  // 'username' | 'email' | 'birthdate'
+        let currentField = null;      // 'username' | 'email' | 'birthdate'
         let inputEl = null;
 
         document.querySelectorAll('.btn-edit').forEach(btn => {
@@ -328,7 +328,9 @@
 
         function openEditModal(field) {
             currentField = field;
-            const currentValue = document.getElementById('profile-' + field).textContent.trim();
+            const currentValue = document
+                .getElementById('profile-' + field)
+                .textContent.trim();
 
             inputEl = document.createElement('input');
             inputEl.className = 'modal__input';
@@ -352,9 +354,7 @@
             }
             profLabel.innerHTML = '';
             profLabel.appendChild(inputEl);
-
             validateProfileInput();
-
             profileModal.classList.remove('hidden');
             profileModal.setAttribute('aria-hidden', 'false');
             inputEl.focus();
@@ -363,21 +363,25 @@
         function hideEditModal() {
             profileModal.classList.add('hidden');
             profileModal.setAttribute('aria-hidden', 'true');
+
             currentField = null;
             inputEl = null;
         }
 
         function validateProfileInput() {
-            let valid = false;
             if (!inputEl) return;
 
+            const v = inputEl.value.trim();
+            let valid = false;
+
             if (currentField === 'username') {
-                valid = inputEl.value.trim().length >= 2;
+                valid = v.length >= 2;
             } else if (currentField === 'email') {
-                valid = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(inputEl.value.trim());
+                valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
             } else if (currentField === 'birthdate') {
-                valid = inputEl.value !== '';
+                valid = v !== '';
             }
+
             profSaveBtn.disabled = !valid;
         }
 
@@ -385,11 +389,15 @@
             if (!currentField || !inputEl) return;
 
             const value = inputEl.value.trim();
+            const payloadKey = currentField === 'birthdate' ? 'birthDate' : currentField;
+            const payload = {[payloadKey]: value};
+
             try {
                 const r = await fetch('/api/profile', {
                     method: 'PATCH',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({[currentField]: value})
+                    credentials: 'same-origin',
+                    body: JSON.stringify(payload)
                 });
                 if (!r.ok) throw new Error(r.status);
 

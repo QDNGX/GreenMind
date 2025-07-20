@@ -11,6 +11,7 @@ import ru.kolbasov_d_k.backend.models.User;
 import ru.kolbasov_d_k.backend.repositories.UserRepository;
 
 import java.security.Principal;
+import java.time.LocalDate;
 
 
 @Service
@@ -54,4 +55,21 @@ public class UserService {
         userRepository.save(user);
     }
 
+    @Transactional
+    public void updateUserName(User user, String username) {
+        user.setUsername(username);
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void updateUserEmail(User user, String email) {
+        user.setEmail(email);
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void updateUserBirthDate(User user, LocalDate birthDate) {
+        user.setBirthDate(birthDate);
+        userRepository.save(user);
+    }
 }
