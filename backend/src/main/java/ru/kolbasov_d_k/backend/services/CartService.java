@@ -51,4 +51,46 @@ public class CartService {
         userProductRepository.save(userProduct);
         productRepository.save(product);
     }
+
+    @Transactional
+    public void updateProductQuantity(Integer userId, Integer productId, int quantity) {
+        Product product = productRepository
+                .findByIdForUpdate(productId)
+                .orElseThrow(() -> new NotFoundException("Product", productId));
+
+        UserProductId id = new UserProductId(userId, product.getId());
+        UserProduct userProduct = userProductRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("UserProduct", id));
+
+
+        int diff = quantity - userProduct.getQuantity();
+        if(diff > 0 && product.getQuantity() < quantity) {
+            throw new OverLimitException("Product", quantity, product.getQuantity());
+        }
+
+        product.setQuantity(product.getQuantity() - diff);
+
+        if(quantity <= 0){
+            userProductRepository.delete(userProduct);
+        }
+        else{
+            userProduct.setQuantity(quantity);
+            userProductRepository.save(userProduct);
+        }
+
+        productRepository.save(product);
+    }
+
+    @Transactional
+    public void deleteProductFromUser(Integer userId, Integer productId) {
+        UserProductId id = new UserProductId(userId, productId);
+        UserProduct userProduct = userProductRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("UserProduct", id));
+
+        Product product = userProduct.getProduct();
+        product.setQuantity(product.getQuantity() + userProduct.getQuantity());
+
+        userProductRepository.delete(userProduct);
+        productRepository.save(product);
+    }
 }

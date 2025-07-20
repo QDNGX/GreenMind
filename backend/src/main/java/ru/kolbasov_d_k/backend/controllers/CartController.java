@@ -47,4 +47,29 @@ public class CartController {
         List<Map<String,Object>> cart = userProductService.findOrders(user);
         return ResponseEntity.ok(cart);
     }
+
+    @PatchMapping
+    public ResponseEntity<List<Map<String,Object>>> update(@AuthenticationPrincipal(expression = "user") User user,
+                                                            @RequestBody ProductDTO productDTO) {
+        cartService.updateProductQuantity(
+                user.getId(),
+                productDTO.getId(),
+                productDTO.getQuantity()
+        );
+        List<Map<String,Object>> cart = userProductService.findOrders(user);
+        return ResponseEntity.ok(cart);
+    }
+
+    @DeleteMapping("/{productId}")
+    public ResponseEntity<List<Map<String,Object>>> delete(@AuthenticationPrincipal(expression = "user") User user,
+                                                            @PathVariable Integer productId) {
+        cartService.deleteProductFromUser(
+                user.getId(),
+                productId
+        );
+        List<Map<String,Object>> cart = userProductService.findOrders(user);
+        return ResponseEntity.ok(cart);
+    }
+
+
 }

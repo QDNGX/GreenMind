@@ -3,14 +3,13 @@ package ru.kolbasov_d_k.backend.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.kolbasov_d_k.backend.models.User;
 import ru.kolbasov_d_k.backend.services.UserProductService;
 import ru.kolbasov_d_k.backend.services.UserService;
 
 import java.security.Principal;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,6 +39,27 @@ public class UserProfileController {
             return ResponseEntity.ok(map);
         } catch (IllegalArgumentException e){
             return ResponseEntity.status(401).build();
+        }
+    }
+
+    @PatchMapping("/profile")
+    public ResponseEntity<Void> updateProfile(Principal principal, @RequestBody Map<String,Object> map) {
+        try{
+            User user = userService.getCurrentUser(principal);
+            if (map.containsKey("username")) {
+                userService.updateUserName(user, (String) map.get("username"));
+            }
+            if (map.containsKey("email")) {
+                userService.updateUserEmail(user, (String) map.get("email"));
+            }
+            if (map.containsKey("birthDate")) {
+                String dateStr = (String) map.get("birthDate");
+                LocalDate birthDate = LocalDate.parse(dateStr);
+                userService.updateUserBirthDate(user, birthDate);
+            }
+            return ResponseEntity.ok().build();
+        } catch (Exception e){
+            return ResponseEntity.badRequest().build();
         }
     }
 }
