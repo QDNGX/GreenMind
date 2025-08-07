@@ -83,6 +83,16 @@
 
     <build>
         <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>3.5.0</version>
+                    <configuration>
+                        <outputDirectory>${project.basedir}/docs/javadoc</outputDirectory>
+                        <reportOutputDirectory>${project.basedir}/docs/javadoc</reportOutputDirectory>
+                    </configuration>
+                </plugin>
+
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>

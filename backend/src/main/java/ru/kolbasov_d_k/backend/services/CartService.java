@@ -14,6 +14,10 @@ import ru.kolbasov_d_k.backend.repositories.UserRepository;
 import ru.kolbasov_d_k.backend.utils.exceptions.NotFoundException;
 import ru.kolbasov_d_k.backend.utils.exceptions.OverLimitException;
 
+/**
+ * Service responsible for shopping cart operations.
+ * Provides methods for adding, updating, and removing products from a user's cart.
+ */
 @Service
 public class CartService {
 
@@ -21,6 +25,13 @@ public class CartService {
     private final UserRepository userRepository;
     private final UserProductRepository userProductRepository;
 
+    /**
+     * Constructs a new CartService with the required dependencies.
+     *
+     * @param productRepository Repository for product data access
+     * @param userRepository Repository for user data access
+     * @param userProductRepository Repository for user-product relationship data access
+     */
     @Autowired
     public CartService(ProductRepository productRepository, UserRepository userRepository, UserProductRepository userProductRepository) {
         this.productRepository = productRepository;
@@ -28,6 +39,16 @@ public class CartService {
         this.userProductRepository = userProductRepository;
     }
 
+    /**
+     * Adds a product to a user's cart.
+     * Decreases the available quantity of the product and increases the quantity in the user's cart.
+     *
+     * @param userId The ID of the user
+     * @param productId The ID of the product to add
+     * @param quantity The quantity of the product to add
+     * @throws NotFoundException If the product or user is not found
+     * @throws OverLimitException If the requested quantity exceeds the available quantity
+     */
     @Transactional
     public void addProductToUser(Integer userId, Integer productId, int quantity) {
         Product product = productRepository
@@ -52,6 +73,17 @@ public class CartService {
         productRepository.save(product);
     }
 
+    /**
+     * Updates the quantity of a product in a user's cart.
+     * Adjusts the available quantity of the product based on the difference between the new and old quantities.
+     * If the new quantity is 0 or negative, the product is removed from the cart.
+     *
+     * @param userId The ID of the user
+     * @param productId The ID of the product to update
+     * @param quantity The new quantity of the product
+     * @throws NotFoundException If the product or user-product relationship is not found
+     * @throws OverLimitException If the requested quantity increase exceeds the available quantity
+     */
     @Transactional
     public void updateProductQuantity(Integer userId, Integer productId, int quantity) {
         Product product = productRepository
@@ -81,6 +113,14 @@ public class CartService {
         productRepository.save(product);
     }
 
+    /**
+     * Removes a product from a user's cart.
+     * Returns the quantity of the product back to the available quantity.
+     *
+     * @param userId The ID of the user
+     * @param productId The ID of the product to remove
+     * @throws NotFoundException If the user-product relationship is not found
+     */
     @Transactional
     public void deleteProductFromUser(Integer userId, Integer productId) {
         UserProductId id = new UserProductId(userId, productId);

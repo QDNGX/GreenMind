@@ -16,11 +16,21 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import ru.kolbasov_d_k.backend.services.MyUserDetailsService;
 
-
+/**
+ * Configuration class for Spring Security.
+ * This class configures authentication, authorization, login/logout behavior,
+ * and other security-related settings for the application.
+ */
 @Configuration
 @EnableWebSecurity
 public class SpringSecurity {
 
+    /**
+     * Creates a password encoder bean for securely hashing passwords.
+     * Uses BCrypt hashing algorithm for password storage.
+     *
+     * @return A BCryptPasswordEncoder instance
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -28,11 +38,24 @@ public class SpringSecurity {
 
     private final MyUserDetailsService myUserDetailsService;
 
+    /**
+     * Constructs a new SpringSecurity with the required user details service.
+     *
+     * @param myUserDetailsService The service used to load user-specific data
+     */
     @Autowired
     public SpringSecurity(MyUserDetailsService myUserDetailsService) {
         this.myUserDetailsService = myUserDetailsService;
     }
 
+    /**
+     * Creates an authentication provider that uses the specified user details service and password encoder.
+     * This provider is responsible for authenticating users against the database.
+     *
+     * @param userDetailsService The service used to load user-specific data
+     * @param passwordEncoder The encoder used to verify passwords
+     * @return A configured DaoAuthenticationProvider
+     */
     @Bean
     public DaoAuthenticationProvider authenticationProvider(UserDetailsService userDetailsService,
                                                             PasswordEncoder passwordEncoder) {
@@ -41,6 +64,13 @@ public class SpringSecurity {
         return provider;
     }
 
+    /**
+     * Creates a handler for successful authentication.
+     * This handler redirects the user to the requested page after successful login,
+     * or to the profile page if no specific redirect target is provided.
+     *
+     * @return An AuthenticationSuccessHandler implementation
+     */
     @Bean
     public AuthenticationSuccessHandler successHandler() {
         return (request, response, authentication) -> {
@@ -58,6 +88,14 @@ public class SpringSecurity {
         };
     }
 
+    /**
+     * Creates a handler for authentication failures.
+     * This handler provides appropriate responses for both AJAX requests and regular form submissions.
+     * For AJAX requests, it returns a 401 status with an error message.
+     * For regular requests, it redirects to the login page with an error parameter.
+     *
+     * @return An AuthenticationFailureHandler implementation
+     */
     @Bean
     public AuthenticationFailureHandler failureHandler() {
         return (request, response, authentication) -> {
@@ -72,7 +110,19 @@ public class SpringSecurity {
         };
     }
 
-
+    /**
+     * Configures the security filter chain for the application.
+     * This method sets up:
+     * - The authentication provider
+     * - URL-based authorization rules
+     * - Form login configuration
+     * - Logout behavior
+     * - CSRF protection (disabled in this configuration)
+     *
+     * @param http The HttpSecurity to configure
+     * @return A configured SecurityFilterChain
+     * @throws Exception If an error occurs during configuration
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
