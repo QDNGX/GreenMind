@@ -1,6 +1,7 @@
 package ru.kolbasov_d_k.backend.controllers;
 
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -62,7 +63,7 @@ public class CartController {
      */
     @PostMapping
     public ResponseEntity<List<Map<String,Object>>> add(@AuthenticationPrincipal(expression = "user") User user,
-                                                        @RequestBody ProductDTO productDTO) {
+                                                        @Valid @RequestBody ProductDTO productDTO) {
         cartService.addProductToUser(
                 user.getId(),
                 productDTO.getId(),
@@ -83,7 +84,7 @@ public class CartController {
      */
     @PatchMapping
     public ResponseEntity<List<Map<String,Object>>> update(@AuthenticationPrincipal(expression = "user") User user,
-                                                            @RequestBody ProductDTO productDTO) {
+                                                            @Valid @RequestBody ProductDTO productDTO) {
         cartService.updateProductQuantity(
                 user.getId(),
                 productDTO.getId(),

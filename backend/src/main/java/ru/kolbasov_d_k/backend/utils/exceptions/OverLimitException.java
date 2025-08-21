@@ -1,15 +1,9 @@
 package ru.kolbasov_d_k.backend.utils.exceptions;
 
-
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
-
 /**
  * Exception thrown when a requested quantity exceeds the available limit.
- * This exception is annotated with @ResponseStatus(HttpStatus.CONFLICT),
- * which means that when it's thrown in a controller, the response will have a 409 status code.
+ * Handled by GlobalExceptionHandler which returns 409 status with JSON error message.
  */
-@ResponseStatus(HttpStatus.CONFLICT)
 public class OverLimitException extends RuntimeException {
 
     /**

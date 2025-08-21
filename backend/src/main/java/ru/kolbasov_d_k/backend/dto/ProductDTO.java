@@ -1,12 +1,22 @@
 package ru.kolbasov_d_k.backend.dto;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+
 /**
  * Data Transfer Object for product information used in cart operations.
  * Contains the product ID and quantity.
  */
 public class ProductDTO {
 
+
+    @NotNull(message = "ID продукта обязателен")
+    @Positive(message = "ID продукта должен быть положительным")
     private Integer productId;
+
+    @NotNull(message = "Количество обязательно")
+    @Min(value = 1, message = "Количество не должно быть менее 1")
     private Integer quantity;
 
     /**
@@ -15,7 +25,7 @@ public class ProductDTO {
     public ProductDTO() {
 
     }
-    
+
     /**
      * Constructs a new ProductDTO with the specified product ID and quantity.
      *
