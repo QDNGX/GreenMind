@@ -33,13 +33,14 @@ public class UserProductService {
 
     /**
      * Finds all products in a user's cart and converts them to a list of maps.
+     * Uses JOIN FETCH to avoid N+1 query problem.
      *
      * @param user The user whose orders to find
      * @return A list of maps containing product information (productId, productName, quantity, imagePath, price)
      */
     public List<Map<String, Object>> findOrders(User user) {
         return userProductRepository
-                .findByUser(user)
+                .findByUserWithProduct(user)
                 .stream()
                 .map(this::convertToMap)
                 .collect(Collectors.toList());
