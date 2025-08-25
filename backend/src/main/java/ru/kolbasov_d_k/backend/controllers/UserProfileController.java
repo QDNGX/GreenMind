@@ -62,14 +62,15 @@ public class UserProfileController {
     /**
      * Updates the profile information of the currently authenticated user.
      * Supports partial updates for username, email, and birthDate fields.
+     * Returns JSON response for compatibility with frontend APIHelper.
      * 
      * @param principal The currently authenticated user
      * @param map A map containing the fields to update. Supported keys: "username", "email", "birthDate"
-     * @return ResponseEntity with status 200 OK if the update was successful,
-     *         or status 400 Bad Request if there was an error during the update
+     * @return ResponseEntity with status 200 OK and success message if the update was successful,
+     *         401 Unauthorized if user is not authenticated, or 400 Bad Request for other errors
      */
     @PatchMapping("/profile")
-    public ResponseEntity<Void> updateProfile(Principal principal, @RequestBody Map<String,Object> map) {
+    public ResponseEntity<Map<String,String>> updateProfile(Principal principal, @RequestBody Map<String,Object> map) {
         try{
             User user = userService.getCurrentUser(principal);
             if (map.containsKey("username")) {
@@ -83,7 +84,16 @@ public class UserProfileController {
                 LocalDate birthDate = LocalDate.parse(dateStr);
                 userService.updateUserBirthDate(user, birthDate);
             }
-            return ResponseEntity.ok().build();
+            
+            // Возвращение JSON для работы с APIHelper
+            Map<String,String> response = new HashMap<>();
+            response.put("status", "success");
+            response.put("message", "Profile updated successfully");
+            return ResponseEntity.ok(response);
+            
+        } catch (IllegalArgumentException e){
+            // Пользователь не найден или недостаточно прав
+            return ResponseEntity.status(401).build();
         } catch (Exception e){
             return ResponseEntity.badRequest().build();
         }
