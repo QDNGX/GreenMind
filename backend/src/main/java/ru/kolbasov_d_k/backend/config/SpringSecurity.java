@@ -66,7 +66,8 @@ public class SpringSecurity {
 
     /**
      * Creates a handler for successful authentication.
-     * This handler redirects the user to the requested page after successful login,
+     * For AJAX requests (X-Requested-With: XMLHttpRequest), returns a JSON success response.
+     * For regular form submissions, redirects the user to the requested page after successful login,
      * or to the profile page if no specific redirect target is provided.
      *
      * @return An AuthenticationSuccessHandler implementation
@@ -74,6 +75,17 @@ public class SpringSecurity {
     @Bean
     public AuthenticationSuccessHandler successHandler() {
         return (request, response, authentication) -> {
+            String requestedWith = request.getHeader("X-Requested-With");
+            
+            // AJAX запрос - возвращаем JSON ответ
+            if("XMLHttpRequest".equalsIgnoreCase(requestedWith)) {
+                response.setStatus(HttpServletResponse.SC_OK);
+                response.setContentType("application/json;charset=utf-8");
+                response.getWriter().write("{\"message\":\"Вход выполнен успешно\"}");
+                return;
+            }
+            
+            // Обычный запрос - redirect как прежде
             String target = request.getParameter("redirect");
 
             if (target == null || target.isBlank()) {
@@ -91,7 +103,7 @@ public class SpringSecurity {
     /**
      * Creates a handler for authentication failures.
      * This handler provides appropriate responses for both AJAX requests and regular form submissions.
-     * For AJAX requests, it returns a 401 status with an error message.
+     * For AJAX requests (X-Requested-With: XMLHttpRequest), it returns a 401 status with a JSON error message.
      * For regular requests, it redirects to the login page with an error parameter.
      *
      * @return An AuthenticationFailureHandler implementation
@@ -102,8 +114,8 @@ public class SpringSecurity {
             String requestedWith = request.getHeader("X-Requested-With");
             if("XMLHttpRequest".equalsIgnoreCase(requestedWith)) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.setContentType("text/plain;charset=utf-8");
-                response.getWriter().println("Неверный e-mail или пароль");
+                response.setContentType("application/json;charset=utf-8");
+                response.getWriter().write("{\"error\":\"Неверный e-mail или пароль\"}");
             } else {
                 response.sendRedirect("/frontend/login.html?error");
             }
@@ -130,7 +142,7 @@ public class SpringSecurity {
         http
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers("/", "index.html").permitAll()
-                        .requestMatchers("/frontend/css/**", "/frontend/js/*", "frontend/img/index/**").permitAll()
+                        .requestMatchers("/frontend/css/**", "/frontend/js/**", "/frontend/img/index/**").permitAll()
                         .requestMatchers("/frontend/register.html", "/register").permitAll()
                         .requestMatchers("/api/session").permitAll()
                         .anyRequest().authenticated())
