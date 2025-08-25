@@ -30,7 +30,7 @@ public class RegisterController {
     /**
      * Registers a new user in the system.
      * Behavior:
-     * - If request validation fails, returns 400 with a map of field errors.
+     * - If request validation fails, returns 400 with validation error messages (handled by GlobalExceptionHandler).
      * - If a user with the provided email already exists, returns 400 with an error message.
      * - On successful user creation, returns 200 with a confirmation message.
      * - On internal server error, returns 500 with an error message.
@@ -41,16 +41,19 @@ public class RegisterController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody UserDTO userDTO) {
         if(userService.existsByEmail(userDTO.getEmail())){
-            Map<String, String> errors = new HashMap<>();
-            errors.put("Email", "Пользователь с таким Email уже существует");
-            return ResponseEntity.badRequest().body(errors);
+            Map<String, String> error = new HashMap<>();
+            error.put("error", "Данный email уже используется");
+            return ResponseEntity.badRequest().body(error);
         }
         try{
             userService.create(userDTO);
-            return ResponseEntity.ok("Пользователь зарегистрирован");
+            Map<String, String> success = new HashMap<>();
+            success.put("message", "Пользователь зарегистрирован");
+            return ResponseEntity.ok(success);
         } catch (Exception e){
-            return ResponseEntity.internalServerError()
-                    .body("Ошибка при регистрации пользователя");
+            Map<String, String> error = new HashMap<>();
+            error.put("error", "Ошибка при регистрации пользователя");
+            return ResponseEntity.internalServerError().body(error);
         }
 
     }
