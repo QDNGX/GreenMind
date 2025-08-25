@@ -12,17 +12,17 @@ import jakarta.validation.constraints.Size;
 public class UserDTO {
 
 
-    @NotBlank(message = "Имя пользователя не может быть пустым")
+    @NotBlank(message = "Введите имя")
     @Size(min = 2, max = 50, message = "Имя должно содержать от 2 до 50 символов")
     private String username;
 
-    @NotBlank(message = "Email не может быть пустым")
+    @NotBlank(message = "Введите email")
     @Email(message = "Некорректный формат Email")
     private String email;
 
-    @NotBlank(message = "Пароль не может быть пустым")
+    @NotBlank(message = "Введите пароль")
     @Size(min = 8, message = "Пароль должен содержать минимум 8 символов")
-    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).*$",
+    @Pattern(regexp = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).*$",
             message = "Пароль должен содержать цифры, заглавные и строчные буквы")
     private String password;
 
