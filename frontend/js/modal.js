@@ -128,7 +128,25 @@
                 return;
             }
 
-            showError(await res.text() || 'Неверный e-mail или пароль');
+            // Обрабатываем JSON ошибки от GlobalExceptionHandler
+            try {
+                const contentType = res.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
+                    const errorData = await res.json();
+                    
+                    // Все ошибки теперь в формате {"error": "message"}
+                    if (errorData.error && typeof errorData.error === 'string') {
+                        showError(errorData.error);
+                        return;
+                    }
+                }
+                
+                // Fallback для не-JSON или неожиданных форматов
+                const textError = await res.text();
+                showError(textError || 'Неверный e-mail или пароль');
+            } catch (parseError) {
+                showError('Неверный e-mail или пароль');
+            }
         } catch (err) {
             console.error(err);
             showError('Сервер временно недоступен. Попробуйте позже.');
