@@ -69,21 +69,17 @@ main {
 
 .cart .no-orders {
     display: none;
-
     width: 100%;
     min-height: 500px;
     box-sizing: border-box;
     margin: 0;
-
     position: relative;
     cursor: pointer;
-
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
     padding-top: 2rem;
-
     border: 4px solid #b9e1e1;
     border-radius: 12px;
     background: #ffffff;
@@ -149,6 +145,8 @@ main {
     background: #fff;
     display: flex;
     flex-direction: column;
+    cursor: pointer;
+    transition: border-color .2s, transform .2s;
 }
 
 .order-card__img {
@@ -384,7 +382,9 @@ h2.section-title {
 }
 
 #modal,
-#profile-modal {
+#profile-modal,
+#product-info-modal,
+#product-edit-modal {
     position: fixed;
     inset: 0;
     display: grid;
@@ -396,12 +396,15 @@ h2.section-title {
 }
 
 #modal.hidden,
-#profile-modal.hidden {
+#profile-modal.hidden,
+#product-info-modal.hidden,
+#product-edit-modal.hidden {
     display: none;
 }
 
 #modal .modal__dialog,
-#profile-modal .modal__dialog {
+#profile-modal .modal__dialog,
+#product-edit-modal .modal__dialog {
     background: #fff;
     padding: 2rem;
     border-radius: 12px;
@@ -414,7 +417,8 @@ h2.section-title {
 }
 
 #modal.hidden .modal__dialog,
-#profile-modal.hidden .modal__dialog {
+#profile-modal.hidden .modal__dialog,
+#product-edit-modal.hidden .modal__dialog {
     transform: scale(.95);
     opacity: 0;
 }
@@ -502,5 +506,256 @@ h2.section-title {
     }
     to {
         opacity: 1;
+    }
+}
+
+/* Стили для модалки информации о товаре */
+.product-modal__dialog {
+    background: #fff;
+    border-radius: 16px;
+    max-width: 600px;
+    width: 90vw;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, .2);
+    transform: scale(1);
+    opacity: 1;
+    transition: transform .3s ease, opacity .3s ease;
+    position: relative;
+}
+
+#product-info-modal.hidden .product-modal__dialog {
+    transform: scale(.95);
+    opacity: 0;
+}
+
+.product-modal__close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 255, 255, .9);
+    border: 1px solid #e0e0e0;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    transition: background .2s, border-color .2s;
+}
+
+.product-modal__close:hover {
+    background: #f5f5f5;
+    border-color: #c0c0c0;
+}
+
+.product-modal__close svg {
+    color: #666;
+}
+
+.product-modal__content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    padding: 2rem;
+}
+
+.product-modal__image {
+    border-radius: 12px;
+    overflow: hidden;
+    aspect-ratio: 1;
+    background: #f8f9fa;
+}
+
+.product-modal__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.product-modal__info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.product-modal__title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #1E1E1E;
+    margin: 0;
+}
+
+.product-modal__price {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--color-accent);
+    margin: 0;
+}
+
+.product-modal__quantity {
+    font-size: 1.1rem;
+    color: var(--color-muted);
+    margin: 0;
+}
+
+.product-modal__quantity span {
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.product-modal__total {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--color-text);
+    padding: 0.75rem 1rem;
+    background: #f8fdfd;
+    border-radius: 8px;
+    border: 2px solid var(--color-accent);
+}
+
+.product-modal__total span {
+    color: var(--color-accent);
+}
+
+.product-modal__actions {
+    padding: 0 2rem 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.product-modal__btn {
+    padding: 0.75rem 1.5rem;
+    border: 2px solid;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all .2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.product-modal__btn svg {
+    flex-shrink: 0;
+}
+
+.product-modal__btn_edit {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    color: #fff;
+}
+
+.product-modal__btn_edit:hover {
+    background: #9ec7c7;
+    border-color: #9ec7c7;
+    transform: translateY(-2px);
+}
+
+.product-modal__btn_delete {
+    background: #fff;
+    border-color: #ff6b6b;
+    color: #ff6b6b;
+}
+
+.product-modal__btn_delete:hover {
+    background: #ff6b6b;
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+.order-card:hover {
+    border-color: #9ec7c7;
+    transform: translateY(-2px);
+}
+
+.order-card__img {
+    transition: opacity .2s;
+}
+
+/* Адаптивные стили для мобильных устройств */
+@media (max-width: 768px) {
+    .product-modal__dialog {
+        max-width: 95vw;
+        margin: 1rem;
+    }
+    
+    .product-modal__content {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        padding: 1.5rem;
+    }
+    
+    .product-modal__image {
+        max-width: 280px;
+        justify-self: center;
+    }
+    
+    .product-modal__actions {
+        padding: 0 1.5rem 1.5rem;
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+    
+    .product-modal__title {
+        font-size: 1.5rem;
+        text-align: center;
+    }
+    
+    .product-modal__price,
+    .product-modal__quantity,
+    .product-modal__total {
+        text-align: center;
+    }
+}
+
+/* Стили для модалки редактирования товара */
+.edit-product__info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: #f8fdfd;
+    border-radius: 8px;
+    border: 1px solid var(--color-accent);
+}
+
+.edit-product__image {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.edit-product__details h3 {
+    margin: 0 0 0.25rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.edit-product__details p {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--color-accent);
+    font-weight: 500;
+}
+
+@media (max-width: 480px) {
+    .edit-product__info {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.5rem;
+    }
+    
+    .edit-product__image {
+        width: 80px;
+        height: 80px;
     }
 }
