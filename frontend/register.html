@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet">
     <link href="css/reset.css" rel="stylesheet">
     <link href="css/register-login.css" rel="stylesheet">
+    <link href="css/toast.css" rel="stylesheet">
 </head>
 <body>
 
@@ -47,36 +48,39 @@
     </p>
 </div>
 
+<div id="toast-container"></div>
+
+<script src="js/utils/security.js"></script>
+<script src="js/utils/toast.js"></script>
+<script src="js/utils/api.js"></script>
+
 <script>
     document.getElementById('signup-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const form = e.target;
+        
+        // Сбор данных формы
         const data = {
-            username: form.username.value,
-            email: form.email.value,
+            username: form.username.value.trim(),
+            email: form.email.value.trim(),
             password: form.password.value,
         };
 
         try {
-            const response = await fetch('/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
+            // Используем ApiHelper для отправки запроса
+            await ApiHelper.post('/register', data, {
+                showSuccessToast: true,
+                successMessage: 'Регистрация успешна! Переходим на страницу входа...'
             });
 
-            if (response.ok) {
-                window.location.href = '/frontend/login.html';
-            } else {
-                const err = await response.text();
-                alert("Ошибка регистрации: " + err);
-            }
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 1500);
+            
         } catch (error) {
-            alert('Ошибка соединения с сервером!');
+            // ApiHelper уже показал Toast с детальной ошибкой от сервера
         }
     });
-
 </script>
 </body>
 </html>
