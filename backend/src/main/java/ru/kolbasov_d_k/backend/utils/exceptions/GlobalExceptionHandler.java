@@ -21,20 +21,38 @@ public class GlobalExceptionHandler {
 
     /**
      * Handles Bean Validation errors (@Valid annotation violations).
+     * Prioritizes NotBlank validation errors by showing only those when present,
+     * otherwise shows all other validation errors. This provides cleaner error
+     * messages for users by focusing on empty field errors first.
      * Returns the same format as RegisterController for compatibility with existing frontend code.
      * 
      * @param ex The MethodArgumentNotValidException containing validation errors
-     * @return ResponseEntity with status 400 Bad Request and a map of field errors
+     * @return ResponseEntity with status 400 Bad Request and a map containing concatenated error messages
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationErrors(MethodArgumentNotValidException ex) {
-        Map<String, String> errors = ex.getBindingResult().getFieldErrors().stream()
-                .collect(Collectors.toMap(
-                        FieldError::getField,
-                        error -> error.getDefaultMessage() != null ? error.getDefaultMessage() : "Validation error",
-                        (existing, replacement) -> existing
-                ));
-        return ResponseEntity.badRequest().body(errors);
+        java.util.List<FieldError> fieldErrors = ex.getBindingResult().getFieldErrors();
+        
+        // Разделение вывод ошибок на пустые поля в формах и остальные
+        java.util.List<FieldError> notBlankErrors = fieldErrors.stream()
+                .filter(error -> error.getCode() != null && error.getCode().equals("NotBlank"))
+                .toList();
+        String errorMessages;
+        if (!notBlankErrors.isEmpty()) {
+            // Если есть пустые поля в форме, показываем только их
+            errorMessages = notBlankErrors.stream()
+                    .map(error -> error.getDefaultMessage() != null ? error.getDefaultMessage() : "Validation error")
+                    .collect(Collectors.joining("\n"));
+        } else {
+            // Если нет пустых полей, показываем остальные ошибки (формат, длина и т.д.)
+            errorMessages = fieldErrors.stream()
+                    .map(error -> error.getDefaultMessage() != null ? error.getDefaultMessage() : "Validation error")
+                    .collect(Collectors.joining("\n"));
+        }
+        
+        Map<String, String> error = new HashMap<>();
+        error.put("error", errorMessages);
+        return ResponseEntity.badRequest().body(error);
     }
 
     /**
