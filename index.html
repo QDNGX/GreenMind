@@ -3,38 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="GreenMind - Найдите идеальное растение для вашего дома. Большой выбор комнатных растений с доставкой по всей России.">
+    <meta name="keywords" content="растения, комнатные растения, купить растения, GreenMind">
+
+    <meta http-equiv="Content-Security-Policy"
+          content="default-src 'self';
+                   script-src 'self' 'unsafe-inline';
+                   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+                   font-src 'self' https://fonts.gstatic.com;
+                   img-src 'self' data: https:;">
+
     <title>GreenMind</title>
+
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link href="frontend/css/reset.css" rel="stylesheet">
     <link href="frontend/css/style.css" rel="stylesheet">
+    <link href="frontend/css/toast.css" rel="stylesheet">
 </head>
 <body>
 <div class="wrapper">
-
-
     <header class="header">
         <div class="logo_and_menu">
             <h1 class="logo">
-                <a aria-label="Перейти на главную" href="#">GREENMIND</a>
+                <a aria-label="Перейти на главную" href="/">GREENMIND</a>
             </h1>
             <nav role="navigation">
                 <ul class="menu">
-                    <li><a href="#">Home</a></li>
-                    <li><a class="gray" href="#"> Products</a></li>
-                    <li><a class="gray" href="#"> Contacts </a></li>
+                    <li><a href="/" class="active">Home</a></li>
+                    <li><a class="gray" href="#products">Products</a></li>
+                    <li><a class="gray" href="#contacts">Contacts</a></li>
                 </ul>
             </nav>
         </div>
         <nav role="navigation">
             <ul class="utils">
                 <li class="cart">
-                    <a href="#" id="cartIcon"><img alt="" src="frontend/img/index/header/Cart.svg"></a></li>
+                    <a href="#" id="cartIcon" aria-label="Корзина">
+                        <img alt="" src="frontend/img/index/header/Cart.svg">
+                        <span class="cart-badge" id="cartBadge" style="display: none;">0</span>
+                    </a>
+                </li>
                 <li class="person">
-                    <a href="#" id="personIcon"><img alt="" src="frontend/img/index/header/Profile.svg"></a></li>
-                <li class="burger-btn" id="menuBtn">
-                    <button aria-label="Меню" class="burger-btn">
+                    <a href="#" id="personIcon" aria-label="Профиль">
+                        <img alt="" src="frontend/img/index/header/Profile.svg">
+                    </a>
+                </li>
+                <li class="burger-btn">
+                    <button aria-label="Меню" class="burger-btn" id="menuBtn" aria-expanded="false">
                         <span></span>
                         <span></span>
                         <span></span>
@@ -42,43 +60,62 @@
                 </li>
             </ul>
         </nav>
-
     </header>
+
     <div class="overlay" id="overlay"></div>
 
     <nav aria-hidden="true" class="side-nav" id="sideNav">
         <ul>
             <li><a data-action="profile" href="#">Profile</a></li>
             <li><a data-action="cart" href="#">Cart</a></li>
-            <li><a href="#">Home</a></li>
-            <li><a href="#">Products</a></li>
-            <li><a href="#">Contacts</a></li>
+            <li><a href="/">Home</a></li>
+            <li><a href="#products">Products</a></li>
+            <li><a href="#contacts">Contacts</a></li>
         </ul>
     </nav>
     <div aria-hidden="true" id="login-modal">
         <div aria-labelledby="login-title" aria-modal="true" id="login-box" role="dialog">
             <h2 id="login-title">Вход на сайт</h2>
-            <form action="/login" id="login-form" method="post">
+            <form action="/login" id="login-form" method="post" novalidate>
                 <label>
                     Email
-                    <input autocomplete="username" name="email" placeholder="you@example.com" required type="email">
+                    <input
+                            autocomplete="username"
+                            name="email"
+                            placeholder="you@example.com"
+                            required
+                            type="email"
+                            aria-describedby="email-error">
+                    <span class="error-text" id="email-error" role="alert"></span>
                 </label>
                 <label>
                     Пароль
-                    <input autocomplete="current-password" name="password" placeholder="••••••••" required
-                           type="password">
+                    <input
+                            autocomplete="current-password"
+                            name="password"
+                            placeholder="••••••••"
+                            required
+                            type="password"
+                            minlength="8"
+                            aria-describedby="password-error">
+                    <span class="error-text" id="password-error" role="alert"></span>
                 </label>
 
                 <input name="redirect" type="hidden" value="frontend/profile.html">
 
-                <p hidden id="login-error" style="color:#ff5555;margin:0 0 8px"></p>
+                <p hidden id="login-error" style="color:#ff5555;margin:8px 0" role="alert"></p>
 
-                <button type="submit">Войти</button>
-                <p class="login-note"> Нет аккаунта? <a class="register-btn" href="frontend/register.html">Зарегистрироваться</a>
+                <button type="submit" id="login-submit-btn">
+                    <span class="btn-text">Войти</span>
+                </button>
+
+                <p class="login-note">
+                    Нет аккаунта? <a class="register-btn" href="frontend/register.html">Зарегистрироваться</a>
                 </p>
             </form>
         </div>
     </div>
+
     <main>
         <section class="hero-search">
             <div class="hero-search__content">
@@ -98,29 +135,31 @@
                         <div class="hero-search__stats-item__label">Customers</div>
                     </div>
                 </div>
-                <form action="/search" class="hero-search__form" role="search">
-                    <label class="hero-search__label sr-only" for="hero-search">Search</label>
-
+                <form action="/search" class="hero-search__form" role="search" id="searchForm">
+                    <label class="hero-search__label sr-only" for="Hero-Search">Search</label>
                     <input
                             autocomplete="off"
                             class="hero-search__input"
-                            id="hero-search"
-                            name="name"
+                            id="Hero-Search"
+                            name="q"
                             placeholder="What are you looking for?"
                             type="search"
+                            minlength="2"
+                            maxlength="100"
+                            aria-label="Поиск растений"
                     >
-
                     <button aria-label="Find" class="hero-search__btn" type="submit">
                         <img alt="" height="18" src="frontend/img/index/main/Hero-Search/Vector-3.svg" width="18">
                     </button>
                 </form>
             </div>
             <div class="hero-search__images">
-                <img alt="" src="frontend/img/index/main/Hero-Search/Hand-with-plant.svg">
+                <img alt="Растение в руках" src="frontend/img/index/main/Hero-Search/Hand-with-plant.svg" loading="lazy">
                 <span class="hero-search__images-background"></span>
             </div>
         </section>
-        <section class="Best-Selling">
+
+        <section class="Best-Selling" id="products">
             <div class="Best-Selling__content">
                 <div class="Best-Selling__info">
                     <h2 class="Best-Selling__info-title section-title">
@@ -130,149 +169,140 @@
                         Easiest way to <br> healthy life by buying <br> your favorite plants
                     </p>
                     <button class="Best-Selling__info-button desktop">
-                        <a class="Categories-card__info-link" href="#"> See more <img
-                                alt="arrow" class="Best-Selling__info-icon"
-                                src="frontend/img/index/main/Best-Selling/Vector-4.svg">
+                        <a class="Categories-card__info-link" href="/catalog">
+                            See more
+                            <img alt="arrow" class="Best-Selling__info-icon"
+                                 src="frontend/img/index/main/Best-Selling/Vector-4.svg">
                         </a>
                     </button>
                 </div>
-                <ul class="Best-Selling__list">
+                <ul class="Best-Selling__list" id="best-selling-list">
                     <li class="Best-Selling__item">
-                        <figure class="product">
-                            <img alt="" class="product__image" src="frontend/img/index/main/Best-Selling/Frame_9.svg">
+                        <figure class="product" data-product-id="1">
+                            <img alt="Natural Plants" class="product__image" src="frontend/img/index/main/Best-Selling/Frame_9.svg" loading="lazy">
                             <figcaption class="product__info">
                                 <span class="product__name">Natural Plants</span>
-                                <span class="product__price">₱1,400.00</span>
+                                <span class="product__price">₽1,400.00</span>
                             </figcaption>
                         </figure>
                     </li>
                     <li class="Best-Selling__item">
-                        <figure class="product">
-                            <img alt="" class="product__image" src="frontend/img/index/main/Best-Selling/Frame_8.svg">
+                        <figure class="product" data-product-id="2">
+                            <img alt="Artificial Plants" class="product__image" src="frontend/img/index/main/Best-Selling/Frame_8.svg" loading="lazy">
                             <figcaption class="product__info">
                                 <span class="product__name">Artificial Plants</span>
-                                <span class="product__price">₱900.00</span>
+                                <span class="product__price">₽900.00</span>
                             </figcaption>
                         </figure>
                     </li>
                     <li class="Best-Selling__item">
-                        <figure class="product">
-                            <img alt="" class="product__image" src="frontend/img/index/main/Best-Selling/Frame_7.svg">
+                        <figure class="product" data-product-id="3">
+                            <img alt="Artificial Plants" class="product__image" src="frontend/img/index/main/Best-Selling/Frame_7.svg" loading="lazy">
                             <figcaption class="product__info">
                                 <span class="product__name">Artificial Plants</span>
-                                <span class="product__price">₱3,500.00</span>
+                                <span class="product__price">₽3,500.00</span>
                             </figcaption>
                         </figure>
                     </li>
                 </ul>
                 <button class="Best-Selling__info-button mobile">
-                    See more<img alt="arrow" class="Best-Selling__info-icon"
-                                 src="frontend/img/index/main/Best-Selling/Vector-4.svg">
+                    <a href="/catalog">
+                        See more
+                        <img alt="arrow" class="Best-Selling__info-icon"
+                             src="frontend/img/index/main/Best-Selling/Vector-4.svg">
+                    </a>
                 </button>
             </div>
         </section>
+
         <section class="About-Us">
             <div class="About-Us__content">
                 <div class="About-Us__info">
-                    <h2 class="section-title">
-                        About Us
-                    </h2>
-                    <p class="section-text">
-                        Order now and appreciate the beauty of nature
-                    </p>
+                    <h2 class="section-title">About Us</h2>
+                    <p class="section-text">Order now and appreciate the beauty of nature</p>
                 </div>
                 <ul class="About-Us__list">
                     <li class="About-Us__item">
-                        <img alt="" class="About-Us__item-image" src="frontend/img/index/main/About-Us/Group_1.svg">
+                        <img alt="" class="About-Us__item-image" src="frontend/img/index/main/About-Us/Group_1.svg" loading="lazy">
                         <div class="About-Us__item-title section-title">Large Assortment</div>
-                        <div class="About-Us__item-text section-text">we offer many different types of products with
-                            fewer variations in each category.
+                        <div class="About-Us__item-text section-text">
+                            we offer many different types of products with fewer variations in each category.
                         </div>
                     </li>
                     <li class="About-Us__item">
-                        <img alt="" class="About-Us__item-image" src="frontend/img/index/main/About-Us/Group_1_1.svg">
+                        <img alt="" class="About-Us__item-image" src="frontend/img/index/main/About-Us/Group_1_1.svg" loading="lazy">
                         <div class="About-Us__item-title section-title">Fast & Free Shipping</div>
-                        <div class="About-Us__item-text section-text">4-day or less delivery time, free shipping and an
-                            expedited delivery option.
+                        <div class="About-Us__item-text section-text">
+                            4-day or less delivery time, free shipping and an expedited delivery option.
                         </div>
                     </li>
                     <li class="About-Us__item">
-                        <img alt="" class="About-Us__item-image" src="frontend/img/index/main/About-Us/Group_1_2.svg">
+                        <img alt="" class="About-Us__item-image" src="frontend/img/index/main/About-Us/Group_1_2.svg" loading="lazy">
                         <div class="About-Us__item-title section-title">24/7 Support</div>
-                        <div class="About-Us__item-text section-text">answers to any business related inquiry 24/7 and
-                            in real-time.
+                        <div class="About-Us__item-text section-text">
+                            answers to any business related inquiry 24/7 and in real-time.
                         </div>
                     </li>
                 </ul>
             </div>
         </section>
+
         <section class="Categories">
             <div class="Categories__content">
                 <div class="Categories__info">
-                    <h2 class="section-title">
-                        Categories
-                    </h2>
-                    <p class="section-text">
-                        Find what are you looking for
-                    </p>
+                    <h2 class="section-title">Categories</h2>
+                    <p class="section-text">Find what are you looking for</p>
                 </div>
                 <ul class="Categories__list">
                     <li class="Categories__item up-48px left">
                         <figure class="Categories-card">
-
-                            <img alt="" class="Categories-card__image"
-                                 src="frontend/img/index/main/Categories/Frame_36.svg">
-
+                            <img alt="Natural Plants" class="Categories-card__image"
+                                 src="frontend/img/index/main/Categories/Frame_36.svg" loading="lazy">
                             <figcaption class="Categories-card__info">
-                                <span class="Categories-card__info-name"> Natural Plants</span>
+                                <span class="Categories-card__info-name">Natural Plants</span>
                             </figcaption>
                         </figure>
                     </li>
 
                     <li class="Categories__item down-48px">
                         <figure class="Categories-card">
-                            <img alt="" class="Categories-card__image"
-                                 src="frontend/img/index/main/Categories/Frame_38.svg">
-
+                            <img alt="Plant Accessories" class="Categories-card__image"
+                                 src="frontend/img/index/main/Categories/Frame_38.svg" loading="lazy">
                             <figcaption class="Categories-card__info">
-                                <span class="Categories-card__info-name"> Plant Accessories</span>
-
+                                <span class="Categories-card__info-name">Plant Accessories</span>
                                 <p class="Categories-card__info-description desktop">
                                     Lorem ipsum dolor sit amet, consectetur adipisicing elit.
                                 </p>
                                 <div class="button desktop">
-
                                     <button class="Categories-card__info-button desktop">
-                                        <a class="Categories-card__info-link" href="#"> Explore <img
-                                                alt="arrow" class="Best-Selling__info-icon"
-                                                src="frontend/img/index/main/Best-Selling/Vector-4.svg">
+                                        <a class="Categories-card__info-link" href="/catalog?category=accessories">
+                                            Explore
+                                            <img alt="arrow" class="Best-Selling__info-icon"
+                                                 src="frontend/img/index/main/Best-Selling/Vector-4.svg">
                                         </a>
                                     </button>
                                 </div>
                             </figcaption>
                         </figure>
-
                     </li>
+
                     <li class="Categories__item up-48px right">
                         <figure class="Categories-card">
-                            <img alt="" class="Categories-card__image"
-                                 src="frontend/img/index/main/Categories/Frame_37.svg">
-
+                            <img alt="Artificial Plants" class="Categories-card__image"
+                                 src="frontend/img/index/main/Categories/Frame_37.svg" loading="lazy">
                             <figcaption class="Categories-card__info">
-                                <span class="Categories-card__info-name"> Artificial Plants</span>
-
+                                <span class="Categories-card__info-name">Artificial Plants</span>
                                 <p class="Categories-card__info-description mobile">
                                     Lorem ipsum dolor sit amet, consectetur adipisicing elit.
                                 </p>
                                 <div class="button">
-
                                     <button class="Categories-card__info-button mobile">
-                                        <a class="Categories-card__info-link" href="#"> Explore <img
-                                                alt="arrow" class="Best-Selling__info-icon"
-                                                src="frontend/img/index/main/Best-Selling/Vector-4.svg">
+                                        <a class="Categories-card__info-link" href="/catalog?category=artificial">
+                                            Explore
+                                            <img alt="arrow" class="Best-Selling__info-icon"
+                                                 src="frontend/img/index/main/Best-Selling/Vector-4.svg">
                                         </a>
                                     </button>
-
                                 </div>
                             </figcaption>
                         </figure>
@@ -280,19 +310,20 @@
                 </ul>
             </div>
         </section>
+
         <section class="What-sayAbout">
             <div class="What-sayAbout__content">
                 <div class="What-sayAbout__info">
                     <h2 class="section-title">What customers say about GREENMIND?</h2>
-                    <ul aria-label="Навигация по отзывам" class="What-sayAbout__nav">
-                        <li class="What-sayAbout__nav-item active"></li>
-                        <li class="What-sayAbout__nav-item"></li>
-                        <li class="What-sayAbout__nav-item"></li>
+                    <ul aria-label="Навигация по отзывам" class="What-sayAbout__nav" role="tablist">
+                        <li class="What-sayAbout__nav-item active" role="tab" aria-selected="true" aria-controls="review-1"></li>
+                        <li class="What-sayAbout__nav-item" role="tab" aria-selected="false" aria-controls="review-2"></li>
+                        <li class="What-sayAbout__nav-item" role="tab" aria-selected="false" aria-controls="review-3"></li>
                     </ul>
                 </div>
                 <div class="What-sayAbout__cards-wrapper">
                     <div class="What-sayAbout__cards">
-                        <div class="What-sayAbout__card" id="review-1">
+                        <div class="What-sayAbout__card" id="review-1" role="tabpanel">
                             <div class="What-sayAbout__card-text">
                                 Jorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate libero et velit
                                 interdum, ac aliquet odio mattis. Class aptent taciti sociosqu ad litora torquent per
@@ -300,74 +331,68 @@
                             </div>
                             <div class="What-sayAbout__card-person">
                                 <div class="What-sayAbout__card-person-img">
-                                    <img alt=""
-                                         src="frontend/img/index/main/What-Say-About/unsplash_5aGUyCW_PJw-removebg-preview.svg">
+                                    <img alt="John Doe"
+                                         src="frontend/img/index/main/What-Say-About/unsplash_5aGUyCW_PJw-removebg-preview.svg"
+                                         loading="lazy">
                                 </div>
                                 <div class="What-sayAbout__card-person-info">
-                                    <div class="What-sayAbout__card-person-name">John Doe
-                                    </div>
-                                    <div class="What-sayAbout__card-person-who">
-                                        Youtuber
-                                    </div>
+                                    <div class="What-sayAbout__card-person-name">John Doe</div>
+                                    <div class="What-sayAbout__card-person-who">Youtuber</div>
                                 </div>
                             </div>
                             <div class="What-sayAbout__card-rating">
                                 <div class="What-sayAbout__card-rating-star">
-                                    <img alt="" src="frontend/img/index/main/What-Say-About/StarFill.svg">
+                                    <img alt="Рейтинг" src="frontend/img/index/main/What-Say-About/StarFill.svg">
                                 </div>
-                                <div class="What-sayAbout__card-rating-text"> 4.5</div>
+                                <div class="What-sayAbout__card-rating-text">4.5</div>
                             </div>
                         </div>
-                        <div class="What-sayAbout__card" id="review-2">
+
+                        <div class="What-sayAbout__card" id="review-2" role="tabpanel">
                             <div class="What-sayAbout__card-text">
-                                Jorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate libero et velit
-                                interdum, ac aliquet odio mattis. Class aptent taciti sociosqu ad litora torquent per
-                                conubia nostra, per inceptos himenaeos.
+                                Отличный магазин! Быстрая доставка и качественные растения.
+                                Очень довольна покупкой, обязательно буду заказывать еще.
                             </div>
                             <div class="What-sayAbout__card-person">
                                 <div class="What-sayAbout__card-person-img">
-                                    <img alt=""
-                                         src="frontend/img/index/main/What-Say-About/unsplash_5aGUyCW_PJw-removebg-preview.svg">
+                                    <img alt="Maria Ivanova"
+                                         src="frontend/img/index/main/What-Say-About/unsplash_5aGUyCW_PJw-removebg-preview.svg"
+                                         loading="lazy">
                                 </div>
                                 <div class="What-sayAbout__card-person-info">
-                                    <div class="What-sayAbout__card-person-name">John Doe
-                                    </div>
-                                    <div class="What-sayAbout__card-person-who">
-                                        Youtuber
-                                    </div>
+                                    <div class="What-sayAbout__card-person-name">Maria Ivanova</div>
+                                    <div class="What-sayAbout__card-person-who">Designer</div>
                                 </div>
                             </div>
                             <div class="What-sayAbout__card-rating">
                                 <div class="What-sayAbout__card-rating-star">
-                                    <img alt="" src="frontend/img/index/main/What-Say-About/StarFill.svg">
+                                    <img alt="Рейтинг" src="frontend/img/index/main/What-Say-About/StarFill.svg">
                                 </div>
-                                <div class="What-sayAbout__card-rating-text"> 4.5</div>
+                                <div class="What-sayAbout__card-rating-text">5.0</div>
                             </div>
                         </div>
-                        <div class="What-sayAbout__card" id="review-3">
+
+                        <div class="What-sayAbout__card" id="review-3" role="tabpanel">
                             <div class="What-sayAbout__card-text">
-                                Jorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate libero et velit
-                                interdum, ac aliquet odio mattis. Class aptent taciti sociosqu ad litora torquent per
-                                conubia nostra, per inceptos himenaeos.
+                                Прекрасный выбор растений! Консультанты помогли выбрать идеальные варианты для моей квартиры.
+                                Все растения прижились отлично.
                             </div>
                             <div class="What-sayAbout__card-person">
                                 <div class="What-sayAbout__card-person-img">
-                                    <img alt=""
-                                         src="frontend/img/index/main/What-Say-About/unsplash_5aGUyCW_PJw-removebg-preview.svg">
+                                    <img alt="Alex Smith"
+                                         src="frontend/img/index/main/What-Say-About/unsplash_5aGUyCW_PJw-removebg-preview.svg"
+                                         loading="lazy">
                                 </div>
                                 <div class="What-sayAbout__card-person-info">
-                                    <div class="What-sayAbout__card-person-name">John Doe
-                                    </div>
-                                    <div class="What-sayAbout__card-person-who">
-                                        Youtuber
-                                    </div>
+                                    <div class="What-sayAbout__card-person-name">Alex Smith</div>
+                                    <div class="What-sayAbout__card-person-who">Developer</div>
                                 </div>
                             </div>
                             <div class="What-sayAbout__card-rating">
                                 <div class="What-sayAbout__card-rating-star">
-                                    <img alt="" src="frontend/img/index/main/What-Say-About/StarFill.svg">
+                                    <img alt="Рейтинг" src="frontend/img/index/main/What-Say-About/StarFill.svg">
                                 </div>
-                                <div class="What-sayAbout__card-rating-text"> 4.5</div>
+                                <div class="What-sayAbout__card-rating-text">4.8</div>
                             </div>
                         </div>
                     </div>
@@ -375,20 +400,27 @@
             </div>
         </section>
     </main>
-    <footer class="footer">
+
+    <footer class="footer" id="contacts">
         <div class="footer__top">
             <div class="footer-branding">
-                <h2 class="footer__logo"><a href="#">GREENMIND</a></h2>
+                <h2 class="footer__logo"><a href="/">GREENMIND</a></h2>
                 <p class="footer__tagline">We help you find your dream plant</p>
                 <ul class="footer__social">
-                    <li><a class="social__link" href="#"><img alt=""
-                                                              src="frontend/img/index/footer/social/Group_11.svg"></a>
+                    <li>
+                        <a class="social__link" href="#" aria-label="Facebook">
+                            <img alt="" src="frontend/img/index/footer/social/Group_11.svg">
+                        </a>
                     </li>
-                    <li><a class="social__link" href="#"><img alt=""
-                                                              src="frontend/img/index/footer/social/Group_12.svg"></a>
+                    <li>
+                        <a class="social__link" href="#" aria-label="Twitter">
+                            <img alt="" src="frontend/img/index/footer/social/Group_12.svg">
+                        </a>
                     </li>
-                    <li><a class="social__link" href="#"><img alt=""
-                                                              src="frontend/img/index/footer/social/Group_13.svg"></a>
+                    <li>
+                        <a class="social__link" href="#" aria-label="Instagram">
+                            <img alt="" src="frontend/img/index/footer/social/Group_13.svg">
+                        </a>
                     </li>
                 </ul>
             </div>
@@ -419,11 +451,81 @@
         </div>
     </footer>
 </div>
-<script defer src="frontend/js/hero-search-animation.js"></script>
-<script defer src="frontend/js/change-placeholder.js"></script>
-<script defer src="frontend/js/index.js"></script>
-<script defer src="frontend/js/burger-menu.js"></script>
-<script defer src="frontend/js/modal.js"></script>
+
+<div id="toast-container"></div>
+
+<script src="frontend/js/utils/security.js"></script>
+<script src="frontend/js/utils/toast.js"></script>
+<script src="frontend/js/hero-search-animation.js"></script>
+<script src="frontend/js/change-placeholder.js"></script>
+<script src="frontend/js/index.js"></script>
+<script src="frontend/js/burger-menu.js"></script>
+<script src="frontend/js/modal.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchForm = document.getElementById('searchForm');
+        if (searchForm) {
+            searchForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const query = document.getElementById('Hero-Search').value.trim();
+
+                if (query.length < 2) {
+                    Toast.info('Введите минимум 2 символа для поиска');
+                    return;
+                }
+
+                const safeQuery = SecurityUtils.escapeHtml(query);
+                Toast.info(`Поиск: ${safeQuery}`);
+
+                // В будущем здесь будет редирект на страницу результатов
+                // window.location.href = `/search?q=${encodeURIComponent(query)}`;
+            });
+        }
+        // Плавная прокрутка к якорям
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                const href = this.getAttribute('href');
+                if (href === '#' || href === '#!') return;
+
+                const target = document.querySelector(href);
+                if (target) {
+                    e.preventDefault();
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        if ('IntersectionObserver' in window) {
+            const imageObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        if (img.dataset.src && !img.src) {
+                            img.src = img.dataset.src;
+                            img.removeAttribute('data-src');
+                            observer.unobserve(img);
+                        }
+                    }
+                });
+            }, {
+                rootMargin: '50px'
+            });
+
+            document.querySelectorAll('img[data-src]').forEach(img => {
+                imageObserver.observe(img);
+            });
+        }
+
+    });
+
+    // Обработка ошибок JavaScript
+    window.addEventListener('error', function(e) {
+        console.error('Global error:', e.error);
+    });
+</script>
 </body>
 </html>
-
