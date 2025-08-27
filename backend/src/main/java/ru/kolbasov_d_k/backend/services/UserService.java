@@ -6,18 +6,21 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kolbasov_d_k.backend.dto.UserDTO;
+import ru.kolbasov_d_k.backend.dto.UserResponseDTO;
 import ru.kolbasov_d_k.backend.models.Role;
 import ru.kolbasov_d_k.backend.models.User;
 import ru.kolbasov_d_k.backend.repositories.UserRepository;
 
 import java.security.Principal;
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * Service responsible for user-related operations.
  * Provides methods for creating, finding, and updating users.
  */
 @Service
+@Transactional(readOnly = true)
 public class UserService {
 
     private final UserRepository userRepository;
@@ -77,6 +80,26 @@ public class UserService {
             throw new IllegalArgumentException("User is not logged in");
         }
         return findByEmail(principal.getName());
+    }
+
+    /**
+     * Retrieves all users from the database and converts them to DTOs for safe client response.
+     * This method performs secure data transfer by mapping User entities to UserResponseDTO objects,
+     * which exclude sensitive information like password hashes.
+     * 
+     * <p>The method uses Java Stream API with method reference for efficient collection processing,
+     * converting each User entity to a UserResponseDTO using the static factory method.</p>
+     * 
+     * <p>Security consideration: This method ensures that sensitive user information 
+     * (such as password hashes) is never exposed in the response.</p>
+     *
+     * @return A list of UserResponseDTO objects containing all users' non-sensitive information
+     * @see UserResponseDTO#fromEntity(User)
+     */
+    public List<UserResponseDTO> getAllUsers() {
+        return userRepository.findAll().stream()
+                .map(UserResponseDTO::fromEntity)
+                .toList();
     }
 
     /**

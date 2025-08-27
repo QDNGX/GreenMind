@@ -145,6 +145,7 @@ public class SpringSecurity {
                         .requestMatchers("/frontend/css/**", "/frontend/js/**", "/frontend/img/index/**").permitAll()
                         .requestMatchers("/frontend/register.html", "/register").permitAll()
                         .requestMatchers("/api/session").permitAll()
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .formLogin(formLogin -> formLogin
                         .loginPage("/frontend/login.html")
