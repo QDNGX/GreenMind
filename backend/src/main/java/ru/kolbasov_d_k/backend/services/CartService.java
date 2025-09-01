@@ -96,8 +96,8 @@ public class CartService {
 
 
         int diff = quantity - userProduct.getQuantity();
-        if(diff > 0 && product.getQuantity() < quantity) {
-            throw new OverLimitException("Product", quantity, product.getQuantity());
+        if(diff > 0 && product.getQuantity() < diff) {
+            throw new OverLimitException("Product", diff, product.getQuantity());
         }
 
         product.setQuantity(product.getQuantity() - diff);

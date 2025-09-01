@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ru.kolbasov_d_k.backend.dto.ProductDTO;
-import ru.kolbasov_d_k.backend.models.Product;
+import ru.kolbasov_d_k.backend.dto.ProductResponseDTO;
 import ru.kolbasov_d_k.backend.models.User;
 import ru.kolbasov_d_k.backend.services.CartService;
 import ru.kolbasov_d_k.backend.services.ProductService;
@@ -48,7 +48,7 @@ public class CartController {
      * @return List of all products in the system
      */
     @GetMapping
-    public List<Product> getAllProducts() {
+    public List<ProductResponseDTO> getAllProducts() {
         return productService.findAll();
     }
 
