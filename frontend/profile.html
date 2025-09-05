@@ -111,15 +111,15 @@
         <!-- Модальное окно для информации о товаре -->
         <div aria-hidden="true" class="hidden" id="product-info-modal">
             <div aria-modal="true" class="product-modal__dialog" role="dialog">
-                <button class="product-modal__close" id="product-info-close" aria-label="Закрыть">
-                    <svg width="24" height="24" viewBox="0 0 24 24">
-                        <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <button aria-label="Закрыть" class="product-modal__close" id="product-info-close">
+                    <svg height="24" viewBox="0 0 24 24" width="24">
+                        <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-linecap="round" stroke-width="2"/>
                     </svg>
                 </button>
-                
+
                 <div class="product-modal__content">
                     <div class="product-modal__image">
-                        <img id="product-info-image" src="" alt="">
+                        <img alt="" id="product-info-image" src="">
                     </div>
                     <div class="product-modal__info">
                         <h2 class="product-modal__title" id="product-info-name"></h2>
@@ -133,15 +133,18 @@
 
                 <div class="product-modal__actions">
                     <button class="product-modal__btn product-modal__btn_edit" id="product-edit-btn">
-                        <svg width="16" height="16" viewBox="0 0 24 24">
-                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor" stroke-width="2"/>
-                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2"/>
+                        <svg height="16" viewBox="0 0 24 24" width="16">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor"
+                                  stroke-width="2"/>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor"
+                                  stroke-width="2"/>
                         </svg>
                         Редактировать
                     </button>
                     <button class="product-modal__btn product-modal__btn_delete" id="product-delete-btn">
-                        <svg width="16" height="16" viewBox="0 0 24 24">
-                            <path d="M3 6h18m-2 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" stroke="currentColor" stroke-width="2"/>
+                        <svg height="16" viewBox="0 0 24 24" width="16">
+                            <path d="M3 6h18m-2 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+                                  stroke="currentColor" stroke-width="2"/>
                         </svg>
                         Удалить
                     </button>
@@ -155,7 +158,7 @@
                 <h2 class="modal__title">Редактировать товар</h2>
 
                 <div class="edit-product__info">
-                    <img id="edit-product-image" src="" alt="" class="edit-product__image">
+                    <img alt="" class="edit-product__image" id="edit-product-image" src="">
                     <div class="edit-product__details">
                         <h3 id="edit-product-name"></h3>
                         <p id="edit-product-price"></p>
@@ -164,7 +167,8 @@
 
                 <label class="modal__label">
                     Количество:
-                    <input autocomplete="off" class="modal__input" id="edit-qty-input" inputmode="numeric" type="text" min="1">
+                    <input autocomplete="off" class="modal__input" id="edit-qty-input" inputmode="numeric" min="1"
+                           type="text">
                 </label>
 
                 <p class="modal__total" id="edit-total-price">Итого: —</p>
@@ -228,17 +232,17 @@
     <script src="js/utils/security.js"></script>
     <script src="js/utils/toast.js"></script>
     <script src="js/utils/api.js"></script>
-    
+
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
             try {
                 const data = await ApiHelper.get('/api/profile');
-                
+
                 document.getElementById('profile-username').textContent = data.username || '';
                 document.getElementById('profile-email').textContent = data.email || '';
                 document.getElementById('profile-birthdate').textContent = data.birthDate || '';
                 renderOrders(Array.isArray(data.orders) ? data.orders : []);
-                
+
                 Toast.success('Профиль загружен');
             } catch (e) {
                 console.error('Failed to load profile:', e);
@@ -316,7 +320,7 @@
                     return;
                 }
             }
-            
+
             if (!productsCache.length) {
                 Toast.info('Все товары распроданы');
                 return;
@@ -372,7 +376,7 @@
                     showSuccessToast: true,
                     successMessage: `Товар добавлен в корзину (${qty} шт.)`
                 });
-                
+
                 renderOrders(cartData);
 
                 // Обновляем кеш продуктов
@@ -384,7 +388,7 @@
                     }
                     rebuildSelectOptions();
                 }
-                
+
                 hideModal();
             } catch (e) {
                 console.error('Failed to add to cart:', e);
@@ -475,14 +479,14 @@
             const payload = {[payloadKey]: value};
 
             let apiSuccess = false;
-            
+
             // Разделяем обработку API запроса от UI операций
             try {
                 await ApiHelper.patch('/api/profile', payload, {
                     showSuccessToast: true,
-                    successMessage: `${currentField === 'username' ? 'Имя успешно обновлено' : 
-                                      currentField === 'email' ? 'Email успешно обновлён' : 
-                                      'Дата рождения успешно обновлена'}`
+                    successMessage: `${currentField === 'username' ? 'Имя успешно обновлено' :
+                        currentField === 'email' ? 'Email успешно обновлён' :
+                            'Дата рождения успешно обновлена'}`
                 });
                 apiSuccess = true;
             } catch (e) {
@@ -501,7 +505,7 @@
                     // Даже если UI не обновился, показываем что данные сохранены
                     Toast.info('Данные сохранены. Обновите страницу для отображения изменений.');
                 }
-                
+
                 // Всегда закрываем модал после успешного сохранения
                 hideEditModal();
             }
@@ -559,7 +563,7 @@
                 hideProductModal();
             }
         });
-        
+
         editModal.addEventListener('click', (e) => {
             if (e.target === editModal) {
                 hideProductEditModal();
@@ -568,7 +572,7 @@
 
         function openProductModal(productData) {
             currentProductData = productData;
-            
+
             // Заполняем данные в модалке
             document.getElementById('product-info-image').src = productData.imagePath || '/img/placeholder.png';
             document.getElementById('product-info-image').alt = productData.productName || '';
@@ -576,7 +580,7 @@
             document.getElementById('product-info-price').textContent = `${(productData.price || 0).toLocaleString()} ₽`;
             document.getElementById('product-info-quantity').textContent = productData.quantity || 0;
             document.getElementById('product-info-total').textContent = `${((productData.price || 0) * (productData.quantity || 0)).toLocaleString()} ₽`;
-            
+
             // Показываем модалку
             productModal.classList.remove('hidden');
             productModal.setAttribute('aria-hidden', 'false');
@@ -593,30 +597,30 @@
                 Toast.error('Невозможно редактировать товар');
                 return;
             }
-            
+
             // Сохраняем данные ДО закрытия модалки
-            const productDataToEdit = { ...currentProductData };
+            const productDataToEdit = {...currentProductData};
 
             hideProductModal();
-            
+
             // Заполняем данные в модалке редактирования
             const editImageEl = document.getElementById('edit-product-image');
-            const editNameEl = document.getElementById('edit-product-name');  
+            const editNameEl = document.getElementById('edit-product-name');
             const editPriceEl = document.getElementById('edit-product-price');
-            
+
             if (editImageEl) editImageEl.src = productDataToEdit.imagePath || '/img/placeholder.png';
             if (editImageEl) editImageEl.alt = productDataToEdit.productName || '';
             if (editNameEl) editNameEl.textContent = productDataToEdit.productName || '';
             if (editPriceEl) editPriceEl.textContent = `${(productDataToEdit.price || 0).toLocaleString()} ₽`;
-            
+
             if (editQtyInput) {
                 editQtyInput.value = productDataToEdit.quantity;
-                
+
                 // Восстанавливаем currentProductData для других функций
                 currentProductData = productDataToEdit;
                 validateEditQuantity();
             }
-            
+
             // Показываем модалку редактирования
             if (editModal) {
                 editModal.classList.remove('hidden');
@@ -640,10 +644,10 @@
             if (editQtyInput) {
                 editQtyInput.value = editQtyInput.value.replace(/\D/g, '');
             }
-            
+
             const quantity = parseInt(editQtyInput ? editQtyInput.value : 0) || 0;
             const isValid = quantity > 0;
-            
+
             if (isValid && currentProductData) {
                 const total = currentProductData.price * quantity;
                 if (editTotalPrice) {
@@ -654,7 +658,7 @@
                     editTotalPrice.textContent = 'Итого: —';
                 }
             }
-            
+
             if (editSaveBtn) {
                 editSaveBtn.disabled = !isValid;
             }
@@ -680,10 +684,10 @@
                     showSuccessToast: true,
                     successMessage: 'Количество товара обновлено'
                 });
-                
+
                 renderOrders(cartData);
                 hideProductEditModal();
-                
+
             } catch (e) {
                 console.error('Failed to update product quantity:', e);
                 // ApiHelper уже показал Toast с ошибкой
@@ -705,18 +709,13 @@
                     showSuccessToast: true,
                     successMessage: 'Товар удален из корзины'
                 });
-                
+
                 renderOrders(cartData);
-                
-                // Обновляем кеш продуктов, если он был загружен
-                if (productsCache.length > 0) {
-                    const prod = productsCache.find(p => p.id === currentProductData.productId);
-                    if (prod) {
-                        prod.quantity += currentProductData.quantity;
-                        rebuildSelectOptions();
-                    }
-                }
-                
+
+                // Сбрасываем кеш продуктов, чтобы при следующем открытии модала
+                // данные загрузились заново с актуальными остатками
+                productsCache = [];
+
                 hideProductModal();
             } catch (e) {
                 console.error('Failed to delete product:', e);
