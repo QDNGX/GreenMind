@@ -10,6 +10,7 @@ import ru.kolbasov_d_k.backend.dto.UserResponseDTO;
 import ru.kolbasov_d_k.backend.models.Role;
 import ru.kolbasov_d_k.backend.models.User;
 import ru.kolbasov_d_k.backend.repositories.UserRepository;
+import ru.kolbasov_d_k.backend.utils.exceptions.NotFoundException;
 
 import java.security.Principal;
 import java.time.LocalDate;
@@ -25,17 +26,20 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserProductService userProductService;
 
     /**
      * Constructs a new UserService with the required dependencies.
      *
      * @param userRepository Repository for user data access
      * @param passwordEncoder Encoder for hashing passwords
+     * @param userProductService Service for user-product operations
      */
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserProductService userProductService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.userProductService = userProductService;
     }
 
     /**
@@ -152,5 +156,64 @@ public class UserService {
     public void updateUserBirthDate(User user, LocalDate birthDate) {
         user.setBirthDate(birthDate);
         userRepository.save(user);
+    }
+
+    /**
+     * Deletes a user by their ID.
+     * This method is used by administrators to remove users from the system.
+     * 
+     * @param userId The ID of the user to delete
+     * @throws ru.kolbasov_d_k.backend.utils.exceptions.NotFoundException if user not found
+     */
+    @Transactional
+    public void deleteUser(Integer userId) {
+        if (!userRepository.existsById(userId)) {
+            throw new NotFoundException("User", userId);
+        }
+        userRepository.deleteById(userId);
+    }
+
+    /**
+     * Updates the role of a user.
+     * This method is used by administrators to promote/demote users between USER and ADMIN roles.
+     * 
+     * @param userId The ID of the user whose role to update
+     * @param newRole The new role to assign to the user (USER or ADMIN)
+     * @return UserResponseDTO with updated user information
+     * @throws ru.kolbasov_d_k.backend.utils.exceptions.NotFoundException if user not found
+     * @throws IllegalArgumentException if role is invalid
+     */
+    @Transactional
+    public UserResponseDTO updateUserRole(Integer userId, String newRole) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User", userId));
+        
+        // Validate and convert role string to enum
+        try {
+            ru.kolbasov_d_k.backend.models.Role role = ru.kolbasov_d_k.backend.models.Role.valueOf(newRole);
+            user.setRole(role);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid role. Must be USER or ADMIN");
+        }
+        
+        User updatedUser = userRepository.save(user);
+        return UserResponseDTO.fromEntity(updatedUser);
+    }
+
+    /**
+     * Retrieves all orders for a specific user.
+     * This method is used by administrators to view user purchase history.
+     * Delegates to UserProductService to retrieve user orders.
+     * 
+     * @param userId The ID of the user whose orders to retrieve
+     * @return List of orders (products in cart) for the user as Map objects
+     * @throws ru.kolbasov_d_k.backend.utils.exceptions.NotFoundException if user not found
+     */
+    public List<java.util.Map<String, Object>> getUserOrders(Integer userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User", userId));
+        
+        // Delegate to UserProductService which has the necessary repository access
+        return userProductService.findOrders(user);
     }
 }

@@ -8,6 +8,7 @@ import ru.kolbasov_d_k.backend.dto.ProductCreateDTO;
 import ru.kolbasov_d_k.backend.dto.ProductResponseDTO;
 import ru.kolbasov_d_k.backend.models.Product;
 import ru.kolbasov_d_k.backend.repositories.ProductRepository;
+import ru.kolbasov_d_k.backend.utils.exceptions.NotFoundException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -68,18 +69,53 @@ public class ProductService {
     }
 
 
+    /**
+     * Retrieves a single product by its ID.
+     * This method is used for getting detailed information about a specific product.
+     *
+     * @param productId The ID of the product to retrieve
+     * @return A ProductResponseDTO representing the product
+     * @throws ru.kolbasov_d_k.backend.utils.exceptions.NotFoundException if product not found
+     */
+    public ProductResponseDTO findById(Integer productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new NotFoundException("Product", productId));
+        return ProductResponseDTO.fromEntity(product);
+    }
+
+    /**
+     * Updates an existing product with new information.
+     * This method updates all fields of the product based on the provided DTO.
+     *
+     * @param productId The ID of the product to update
+     * @param createDTO The ProductCreateDTO containing updated product information
+     * @return A ProductResponseDTO representing the updated product
+     * @throws ru.kolbasov_d_k.backend.utils.exceptions.NotFoundException if product not found
+     */
     @Transactional
-    public void update(Integer productId, ProductCreateDTO createDTO) {
-        Product product = productRepository.findById(productId).orElseThrow();
+    public ProductResponseDTO update(Integer productId, ProductCreateDTO createDTO) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new NotFoundException("Product", productId));
         product.setName(createDTO.getName());
         product.setPrice(createDTO.getPrice());
         product.setImagePath(createDTO.getImagePath());
         product.setQuantity(createDTO.getQuantity());
-        productRepository.save(product);
+        Product updatedProduct = productRepository.save(product);
+        return ProductResponseDTO.fromEntity(updatedProduct);
     }
 
+    /**
+     * Deletes a product by its ID.
+     * This method permanently removes the product from the database.
+     *
+     * @param productId The ID of the product to delete
+     * @throws ru.kolbasov_d_k.backend.utils.exceptions.NotFoundException if product not found
+     */
     @Transactional
     public void delete(Integer productId) {
+        if (!productRepository.existsById(productId)) {
+            throw new NotFoundException("Product", productId);
+        }
         productRepository.deleteById(productId);
     }
 }
