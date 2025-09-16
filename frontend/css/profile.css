@@ -381,10 +381,10 @@ h2.section-title {
     }
 }
 
-#modal,
-#profile-modal,
-#product-info-modal,
-#product-edit-modal {
+#profile-cart-modal,
+#profile-edit-modal,
+#profile-product-info-modal,
+#profile-cart-edit-modal {
     position: fixed;
     inset: 0;
     display: grid;
@@ -395,16 +395,16 @@ h2.section-title {
     z-index: 2000;
 }
 
-#modal.hidden,
-#profile-modal.hidden,
-#product-info-modal.hidden,
-#product-edit-modal.hidden {
+#profile-cart-modal.hidden,
+#profile-edit-modal.hidden,
+#profile-product-info-modal.hidden,
+#profile-cart-edit-modal.hidden {
     display: none;
 }
 
-#modal .modal__dialog,
-#profile-modal .modal__dialog,
-#product-edit-modal .modal__dialog {
+#profile-cart-modal .modal__dialog,
+#profile-edit-modal .modal__dialog,
+#profile-cart-edit-modal .modal__dialog {
     background: #fff;
     padding: 2rem;
     border-radius: 12px;
@@ -416,9 +416,9 @@ h2.section-title {
     transition: transform .3s ease, opacity .3s ease;
 }
 
-#modal.hidden .modal__dialog,
-#profile-modal.hidden .modal__dialog,
-#product-edit-modal.hidden .modal__dialog {
+#profile-cart-modal.hidden .modal__dialog,
+#profile-edit-modal.hidden .modal__dialog,
+#profile-cart-edit-modal.hidden .modal__dialog {
     transform: scale(.95);
     opacity: 0;
 }
@@ -522,7 +522,7 @@ h2.section-title {
     position: relative;
 }
 
-#product-info-modal.hidden .product-modal__dialog {
+#profile-product-info-modal.hidden .product-modal__dialog {
     transform: scale(.95);
     opacity: 0;
 }
@@ -758,4 +758,33 @@ h2.section-title {
         width: 80px;
         height: 80px;
     }
+}
+
+/* Кнопка админ-панели */
+#admin-panel-section {
+    grid-column: 1 / 4;
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid #eaefec;
+}
+
+.btn-admin-panel {
+    width: 100%;
+    padding: 14px 24px;
+    background: #C1DCDC;
+    color: #1e1e1e;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background .2s;
+}
+
+.btn-admin-panel:hover {
+    background: #a8c9c9;
+}
+
+.btn-admin-panel:active {
+    transform: translateY(1px);
 }
