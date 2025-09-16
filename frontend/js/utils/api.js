@@ -1,18 +1,23 @@
 const ApiHelper = {
     async handleResponse(response, options = {}) {
         const { showSuccessToast = false, successMessage = 'Операция выполнена успешно' } = options;
-        
+
         // Успешный ответ
         if (response.ok) {
-            const data = await response.json();
-            
             if (showSuccessToast) {
                 Toast.success(successMessage);
             }
-            
+
+            // Для 204 No Content возвращаем null (нет тела ответа)
+            if (response.status === 204) {
+                return null;
+            }
+
+            // Для остальных успешных ответов парсим JSON
+            const data = await response.json();
             return data;
         }
-        
+
         // Обработка ошибок
         await this.handleError(response);
         throw new Error(`HTTP ${response.status}`);
@@ -97,7 +102,23 @@ const ApiHelper = {
             body: JSON.stringify(data),
             ...options
         });
-        
+
+        return this.handleResponse(response, options);
+    },
+
+    async put(url, data, options = {}) {
+        const response = await fetch(url, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                ...options.headers
+            },
+            credentials: 'same-origin',
+            body: JSON.stringify(data),
+            ...options
+        });
+
         return this.handleResponse(response, options);
     },
 
