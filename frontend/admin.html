@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Admin Panel - GreenMind</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="css/reset.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/admin.css" rel="stylesheet">
+    <link href="css/toast.css" rel="stylesheet">
+</head>
+<body>
+<div class="wrapper">
+    <header class="header">
+        <img alt="" aria-hidden="true" class="hero-bg"
+             src="img/profile/header/scenic-view-sky-sunrise_1048944-27468973.avif">
+        <div class="logout-container">
+            <button aria-label="Выйти" class="btn-log-out" id="logout-btn" type="button">
+                <img alt="" src="img/profile/header/logout.png"/>
+            </button>
+        </div>
+    </header>
+    <main class="container profile-page">
+        <section class="users-section">
+            <h2 class="section-title cart-heading" id="users-title">Пользователи</h2>
+            <hr aria-hidden="true" class="section-divider">
+            <ul class="orders-list" id="users-list"></ul>
+            <div class="no-orders" id="no-users">
+                <p class="no-orders__text">Пользователей пока нет</p>
+                <div class="no-orders__plus"></div>
+            </div>
+        </section>
+        <div aria-hidden="true" class="hidden" id="modal">
+            <div aria-modal="true" class="modal__dialog" role="dialog">
+                <h2 class="modal__title">Добавить товар</h2>
+
+                <label class="modal__label">
+                    Товар:
+                    <select class="modal__select" id="product-select"></select>
+                </label>
+
+                <label class="modal__label">
+                    Кол‑во:
+                    <input autocomplete="off" class="modal__input" id="qty-input" inputmode="numeric" type="text">
+                </label>
+
+                <p class="modal__total" id="total-price">Итого: —</p>
+
+                <div class="modal__actions">
+                    <button class="modal__btn modal__btn_cancel" id="cancel-btn">Отмена</button>
+                    <button class="modal__btn modal__btn_ok" disabled id="confirm-btn">Добавить</button>
+                </div>
+            </div>
+        </div>
+
+        <div aria-hidden="true" class="hidden" id="profile-modal">
+            <div aria-modal="true" class="modal__dialog" role="dialog">
+                <h2 class="modal__title" id="profile-modal-title"></h2>
+
+                <label class="modal__label" id="profile-modal-label">
+                </label>
+
+                <div class="modal__actions">
+                    <button class="modal__btn modal__btn_cancel" id="profile-cancel">Отмена</button>
+                    <button class="modal__btn modal__btn_ok" disabled id="profile-save">Сохранить</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Модальное окно для информации о пользователе -->
+        <div aria-hidden="true" class="hidden" id="user-info-modal">
+            <div aria-modal="true" class="user-modal__dialog" role="dialog">
+                <button aria-label="Закрыть" class="user-modal__close" id="user-info-close">
+                    <svg height="24" viewBox="0 0 24 24" width="24">
+                        <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-linecap="round" stroke-width="2"/>
+                    </svg>
+                </button>
+
+                <div class="user-modal__content">
+                    <div class="user-modal__image">
+                        <img alt="" id="user-info-image" src="">
+                    </div>
+                    <div class="user-modal__info">
+                        <h2 class="user-modal__title" id="user-info-name"></h2>
+                        <p class="user-modal__email" id="user-info-email"></p>
+                        <p class="user-modal__id"><span id="user-info-id"></span></p>
+                        <div class="user-modal__created">
+                            <span id="user-info-created"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="user-modal__actions">
+                    <button class="user-modal__btn user-modal__btn_edit" id="user-edit-btn">
+                        <svg height="16" viewBox="0 0 24 24" width="16">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor"
+                                  stroke-width="2"/>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor"
+                                  stroke-width="2"/>
+                        </svg>
+                        Изменить роль
+                    </button>
+                    <button class="user-modal__btn user-modal__btn_delete" id="user-delete-btn">
+                        <svg height="16" viewBox="0 0 24 24" width="16">
+                            <path d="M3 6h18m-2 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2 2h4a2 2 0 0 1 2 2v2"
+                                  stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                        Удалить пользователя
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Модальное окно для информации о товаре -->
+        <div aria-hidden="true" class="hidden" id="product-info-modal">
+            <div aria-modal="true" class="product-modal__dialog" role="dialog">
+                <button aria-label="Закрыть" class="product-modal__close" id="product-info-close">
+                    <svg height="24" viewBox="0 0 24 24" width="24">
+                        <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-linecap="round" stroke-width="2"/>
+                    </svg>
+                </button>
+
+                <div class="product-modal__content">
+                    <div class="product-modal__image">
+                        <img alt="" id="product-info-image" src="">
+                    </div>
+                    <div class="product-modal__info">
+                        <h2 class="product-modal__title" id="product-info-name"></h2>
+                        <p class="product-modal__price" id="product-info-price"></p>
+                        <p class="product-modal__quantity"><span id="product-info-quantity"></span></p>
+                        <div class="product-modal__total">
+                            <span id="product-info-total"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-modal__actions">
+                    <button class="product-modal__btn product-modal__btn_edit" id="product-edit-btn">
+                        <svg height="16" viewBox="0 0 24 24" width="16">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor"
+                                  stroke-width="2"/>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor"
+                                  stroke-width="2"/>
+                        </svg>
+                        Редактировать
+                    </button>
+                    <button class="product-modal__btn product-modal__btn_delete" id="product-delete-btn">
+                        <svg height="16" viewBox="0 0 24 24" width="16">
+                            <path d="M3 6h18m-2 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+                                  stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                        Удалить
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Модальное окно для редактирования товара -->
+        <div aria-hidden="true" class="hidden" id="product-edit-modal">
+            <div aria-modal="true" class="modal__dialog" role="dialog">
+                <h2 class="modal__title">Редактировать товар</h2>
+
+                <div class="edit-product__info">
+                    <img alt="" class="edit-product__image" id="edit-product-image-preview" src="">
+                    <div class="edit-product__details">
+                        <h3 id="edit-product-name-display"></h3>
+                        <p id="edit-product-price-display"></p>
+                    </div>
+                </div>
+
+                <label class="modal__label">
+                    Количество:
+                    <input autocomplete="off" class="modal__input" id="edit-qty-input" inputmode="numeric" min="1"
+                           type="text">
+                </label>
+
+                <p class="modal__total" id="edit-total-price">Итого: —</p>
+
+                <div class="modal__actions">
+                    <button class="modal__btn modal__btn_cancel" id="edit-cancel-btn">Отмена</button>
+                    <button class="modal__btn modal__btn_ok" disabled id="edit-save-btn">Сохранить</button>
+                </div>
+            </div>
+        </div>
+        <section class="products-section">
+            <h2 class="section-title cart-heading" id="products-title">Товары</h2>
+            <hr aria-hidden="true" class="section-divider">
+            <ul class="orders-list" id="products-list"></ul>
+            <div class="no-orders" id="no-products">
+                <p class="no-orders__text">Товаров пока нет</p>
+                <div class="no-orders__plus"></div>
+            </div>
+        </section>
+
+        <!-- Модальное окно для добавления нового товара -->
+        <div aria-hidden="true" class="hidden" id="add-product-modal">
+            <div aria-modal="true" class="modal__dialog" role="dialog">
+                <h2 class="modal__title">Добавить новый товар</h2>
+
+                <label class="modal__label">
+                    Название товара:
+                    <input type="text" class="modal__input" id="new-product-name" placeholder="Введите название">
+                </label>
+
+                <label class="modal__label">
+                    Цена (₽):
+                    <input type="text" class="modal__input" id="new-product-price" inputmode="numeric" placeholder="0">
+                </label>
+
+                <label class="modal__label">
+                    Количество:
+                    <input type="text" class="modal__input" id="new-product-quantity" inputmode="numeric" placeholder="0">
+                </label>
+
+                <label class="modal__label">
+                    Путь к изображению:
+                    <input type="text" class="modal__input" id="new-product-image" placeholder="/img/products/example.jpg">
+                </label>
+
+                <div class="modal__actions">
+                    <button class="modal__btn modal__btn_cancel" id="add-product-cancel">Отмена</button>
+                    <button class="modal__btn modal__btn_ok" disabled id="add-product-confirm">Добавить</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Модальное окно для редактирования товара -->
+        <div aria-hidden="true" class="hidden" id="edit-product-modal">
+            <div aria-modal="true" class="modal__dialog" role="dialog">
+                <h2 class="modal__title">Редактировать товар</h2>
+
+                <label class="modal__label">
+                    Название товара:
+                    <input type="text" class="modal__input" id="edit-product-name" placeholder="Введите название">
+                </label>
+
+                <label class="modal__label">
+                    Цена (₽):
+                    <input type="text" class="modal__input" id="edit-product-price" inputmode="numeric" placeholder="0">
+                </label>
+
+                <label class="modal__label">
+                    Количество:
+                    <input type="text" class="modal__input" id="edit-product-quantity" inputmode="numeric" placeholder="0">
+                </label>
+
+                <label class="modal__label">
+                    Путь к изображению:
+                    <input type="text" class="modal__input" id="edit-product-image" placeholder="/img/products/example.jpg">
+                </label>
+
+                <div class="modal__actions">
+                    <button class="modal__btn modal__btn_cancel" id="edit-product-cancel">Отмена</button>
+                    <button class="modal__btn modal__btn_ok" id="edit-product-save">Сохранить изменения</button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="footer">
+        <div class="footer__top">
+            <div class="footer-branding">
+                <h2 class="footer__logo"><a href="/index.html">GREENMIND</a></h2>
+                <p class="footer__tagline">We help you find your dream plant</p>
+                <ul class="footer__social">
+                    <li><a class="social__link" href="#"><img alt=""
+                                                              src="/frontend/img/index/footer/social/Group_11.svg"></a>
+                    </li>
+                    <li><a class="social__link" href="#"><img alt=""
+                                                              src="/frontend/img/index/footer/social/Group_12.svg"></a>
+                    </li>
+                    <li><a class="social__link" href="#"><img alt=""
+                                                              src="/frontend/img/index/footer/social/Group_13.svg"></a>
+                    </li>
+                </ul>
+            </div>
+            <div class="footer__nav">
+                <ul class="footer__nav-list">
+                    <li class="footer__nav-item non-clickable">Information</li>
+                    <li class="footer__nav-item"><a href="#">About</a></li>
+                    <li class="footer__nav-item"><a href="#">Product</a></li>
+                    <li class="footer__nav-item"><a href="#">Blog</a></li>
+                </ul>
+                <ul class="footer__nav-list">
+                    <li class="footer__nav-item non-clickable">Company</li>
+                    <li class="footer__nav-item"><a href="#">Community</a></li>
+                    <li class="footer__nav-item"><a href="#">Career</a></li>
+                    <li class="footer__nav-item"><a href="#">Our story</a></li>
+                </ul>
+                <ul class="footer__nav-list">
+                    <li class="footer__nav-item non-clickable">Contact</li>
+                    <li class="footer__nav-item"><a href="#">Getting Started</a></li>
+                    <li class="footer__nav-item"><a href="#">Pricing</a></li>
+                    <li class="footer__nav-item"><a href="#">Resources</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer__legal">
+            <small>2023 all Right Reserved Term of use GREENMIND</small>
+        </div>
+    </footer>
+
+    <!-- Контейнер для Toast уведомлений -->
+    <div id="toast-container"></div>
+
+    <!-- Подключение утилит -->
+    <script src="js/utils/security.js"></script>
+    <script src="js/utils/toast.js"></script>
+    <script src="js/utils/api.js"></script>
+    <script src="js/utils/modal-utils.js"></script>
+    <script src="js/utils/cart-utils.js"></script>
+
+    <!-- Подключение админ-панели -->
+    <script src="js/pages/admin.js"></script>
+
+</div>
+</body>
+</html>
