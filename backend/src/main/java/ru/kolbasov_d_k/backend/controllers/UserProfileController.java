@@ -51,6 +51,7 @@ public class UserProfileController {
             map.put("username", user.getUsername());
             map.put("email", user.getEmail());
             map.put("birthDate", user.getBirthDate());
+            map.put("role", user.getRole());
             map.put("orders", userProductService.findOrders(user));
 
             return ResponseEntity.ok(map);
