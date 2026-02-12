@@ -44,7 +44,7 @@ public class User {
     /**
      * The email address of the user, used for authentication.
      */
-    @Column(name = "email", nullable = false)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
     /**

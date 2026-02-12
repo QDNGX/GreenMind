@@ -1,14 +1,25 @@
 package ru.kolbasov_d_k.backend.utils.exceptions;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 /**
@@ -18,6 +29,8 @@ import java.util.stream.Collectors;
  */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     /**
      * Handles Bean Validation errors (@Valid annotation violations).
@@ -84,6 +97,155 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * Handles duplicate email exceptions during user registration.
+     * Returns an error response when trying to register with an email that already exists.
+     * 
+     * @param ex The DuplicateEmailException containing the error message
+     * @return ResponseEntity with status 409 Conflict and a JSON error message
+     */
+    @ExceptionHandler(DuplicateEmailException.class)
+    public ResponseEntity<Map<String, String>> handleDuplicateEmail(DuplicateEmailException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", "Данный email уже используется");
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    /**
+     * Handles Spring Security authentication failures.
+     * Returns an error response when user credentials are incorrect or user is not found.
+     * 
+     * @param ex The UsernameNotFoundException containing the error message
+     * @return ResponseEntity with status 401 Unauthorized and a JSON error message
+     */
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleUsernameNotFound(UsernameNotFoundException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", "Неверные учетные данные");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+    }
+
+    /**
+     * Handles IllegalArgumentException for invalid method arguments.
+     * Returns an error response when method arguments are invalid or null.
+     * 
+     * @param ex The IllegalArgumentException containing the error message
+     * @return ResponseEntity with status 400 Bad Request and a JSON error message
+     */
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Map<String, String>> handleIllegalArgument(IllegalArgumentException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage() != null ? ex.getMessage() : "Неверные данные запроса");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    /**
+     * Handles NoSuchElementException when optional elements are not found.
+     * Returns an error response when trying to access non-existent elements.
+     * 
+     * @param ex The NoSuchElementException
+     * @return ResponseEntity with status 404 Not Found and a JSON error message
+     */
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<Map<String, String>> handleNoSuchElement(NoSuchElementException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", "Запрашиваемый ресурс не найден");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    /**
+     * Handles database integrity violations (e.g., duplicate keys, foreign key constraints).
+     * Returns an error response when database constraints are violated.
+     * 
+     * @param ex The DataIntegrityViolationException
+     * @return ResponseEntity with status 409 Conflict and a JSON error message
+     */
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Map<String, String>> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
+        Map<String, String> error = new HashMap<>();
+        String message = "Нарушение целостности данных";
+        
+        // Check for specific constraint violations
+        if (ex.getMessage() != null) {
+            if (ex.getMessage().contains("email") && ex.getMessage().contains("unique")) {
+                message = "Данный email уже используется";
+            }
+        }
+        
+        error.put("error", message);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    /**
+     * Handles malformed JSON requests that cannot be parsed.
+     * Returns an error response when request body contains invalid JSON.
+     * 
+     * @param ex The HttpMessageNotReadableException
+     * @return ResponseEntity with status 400 Bad Request and a JSON error message
+     */
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<Map<String, String>> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", "Неверный формат запроса");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    /**
+     * Handles unsupported HTTP methods.
+     * Returns an error response when client uses HTTP method not supported by the endpoint.
+     * 
+     * @param ex The HttpRequestMethodNotSupportedException
+     * @return ResponseEntity with status 405 Method Not Allowed and a JSON error message
+     */
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<Map<String, String>> handleMethodNotSupported(HttpRequestMethodNotSupportedException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", "Метод " + ex.getMethod() + " не поддерживается");
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(error);
+    }
+
+    /**
+     * Handles missing required request parameters.
+     * Returns an error response when required request parameters are not provided.
+     * 
+     * @param ex The MissingServletRequestParameterException
+     * @return ResponseEntity with status 400 Bad Request and a JSON error message
+     */
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<Map<String, String>> handleMissingRequestParameter(MissingServletRequestParameterException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", "Отсутствует обязательный параметр: " + ex.getParameterName());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    /**
+     * Handles type mismatch exceptions for request parameters.
+     * Returns an error response when request parameter types don't match expected types.
+     * 
+     * @param ex The MethodArgumentTypeMismatchException
+     * @return ResponseEntity with status 400 Bad Request and a JSON error message
+     */
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<Map<String, String>> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", "Неверный тип параметра: " + ex.getName());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    /**
+     * Handles Spring Security access denied exceptions.
+     * Returns an error response when user doesn't have sufficient privileges.
+     * 
+     * @param ex The AccessDeniedException
+     * @return ResponseEntity with status 403 Forbidden and a JSON error message
+     */
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Map<String, String>> handleAccessDenied(AccessDeniedException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", "Доступ запрещен");
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
+    }
+
+    /**
      * Handles all other unexpected exceptions that are not caught by specific handlers.
      * Returns a generic error message without exposing internal system details for security reasons.
      * 
@@ -92,6 +254,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> handleGlobalException(Exception ex) {
+        log.error("Unhandled exception: {}", ex.getClass().getName(), ex);
         Map<String, String> error = new HashMap<>();
         error.put("error", "Internal server error");
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
