@@ -1,5 +1,8 @@
 package ru.kolbasov_d_k.backend.config;
 
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +17,14 @@ import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfFilter;
+import org.springframework.security.web.csrf.CsrfToken;
+import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
+import org.springframework.web.filter.OncePerRequestFilter;
 import ru.kolbasov_d_k.backend.services.MyUserDetailsService;
+
+import java.io.IOException;
 
 /**
  * Configuration class for Spring Security.
@@ -157,7 +167,32 @@ public class SpringSecurity {
                         .permitAll())
                 .logout(logout -> logout
                         .logoutUrl("/logout"))
-                .csrf(csrf -> csrf.disable());
+                .csrf(csrf -> csrf
+                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                        .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
+                )
+                .addFilterAfter(new CsrfCookieFilter(), CsrfFilter.class);
         return http.build();
+    }
+
+    /**
+     * Filter that forces eager loading of the CSRF token on every request.
+     * Spring Security 6 uses deferred token loading by default, which means
+     * the XSRF-TOKEN cookie is never set unless something triggers {@code getToken()}.
+     * This filter ensures the cookie is always available for JavaScript to read.
+     */
+    private static class CsrfCookieFilter extends OncePerRequestFilter {
+        @Override
+        protected void doFilterInternal(HttpServletRequest request,
+                                        HttpServletResponse response,
+                                        FilterChain filterChain)
+                throws ServletException, IOException {
+            CsrfToken csrfToken = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
+            if (csrfToken != null) {
+                // Force token generation so the cookie is written
+                csrfToken.getToken();
+            }
+            filterChain.doFilter(request, response);
+        }
     }
 }

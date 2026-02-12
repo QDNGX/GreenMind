@@ -108,10 +108,14 @@
         clearError();
 
         try {
+            const csrfToken = ApiHelper.getCsrfToken();
             const res = await fetch('/login', {
                 method: 'POST',
                 body: new FormData(form),
-                headers: {"X-Requested-With": "XMLHttpRequest"},
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                    ...(csrfToken && {"X-XSRF-TOKEN": csrfToken}),
+                },
                 credentials: 'same-origin'
             });
             if (res.redirected) {

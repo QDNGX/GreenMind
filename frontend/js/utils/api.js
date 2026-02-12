@@ -1,4 +1,8 @@
 const ApiHelper = {
+    getCsrfToken() {
+        const match = document.cookie.match(/XSRF-TOKEN=([^;]+)/);
+        return match ? decodeURIComponent(match[1]) : null;
+    },
     async handleResponse(response, options = {}) {
         const { showSuccessToast = false, successMessage = 'Операция выполнена успешно' } = options;
 
@@ -76,11 +80,13 @@ const ApiHelper = {
     },
 
     async post(url, data, options = {}) {
+        const csrfToken = this.getCsrfToken();
         const response = await fetch(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-Requested-With': 'XMLHttpRequest',
+                ...(csrfToken && {'X-XSRF-TOKEN': csrfToken}),
                 ...options.headers
             },
             credentials: 'same-origin',
@@ -91,11 +97,13 @@ const ApiHelper = {
         return this.handleResponse(response, options);
     },
     async patch(url, data, options = {}) {
+        const csrfToken = this.getCsrfToken();
         const response = await fetch(url, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
                 'X-Requested-With': 'XMLHttpRequest',
+                ...(csrfToken && {'X-XSRF-TOKEN': csrfToken}),
                 ...options.headers
             },
             credentials: 'same-origin',
@@ -107,11 +115,13 @@ const ApiHelper = {
     },
 
     async put(url, data, options = {}) {
+        const csrfToken = this.getCsrfToken();
         const response = await fetch(url, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
                 'X-Requested-With': 'XMLHttpRequest',
+                ...(csrfToken && {'X-XSRF-TOKEN': csrfToken}),
                 ...options.headers
             },
             credentials: 'same-origin',
@@ -136,10 +146,12 @@ const ApiHelper = {
         return this.handleResponse(response, options);
     },
     async delete(url, options = {}) {
+        const csrfToken = this.getCsrfToken();
         const response = await fetch(url, {
             method: 'DELETE',
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
+                ...(csrfToken && {'X-XSRF-TOKEN': csrfToken}),
                 ...options.headers
             },
             credentials: 'same-origin',

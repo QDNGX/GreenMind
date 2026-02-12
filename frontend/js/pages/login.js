@@ -15,10 +15,12 @@ document.getElementById('signing-form').addEventListener('submit', async (e) => 
         formData.append('password', data.password);
         formData.append('redirect', '/');
 
+        const csrfToken = ApiHelper.getCsrfToken();
         const response = await fetch('/login', {
             method: 'POST',
             headers: {
-                'X-Requested-With': 'XMLHttpRequest'
+                'X-Requested-With': 'XMLHttpRequest',
+                ...(csrfToken && {'X-XSRF-TOKEN': csrfToken}),
             },
             credentials: 'same-origin',
             body: formData
