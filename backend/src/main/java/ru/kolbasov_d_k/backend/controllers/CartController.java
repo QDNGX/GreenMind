@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import ru.kolbasov_d_k.backend.dto.CartItemResponseDTO;
 import ru.kolbasov_d_k.backend.dto.ProductDTO;
 import ru.kolbasov_d_k.backend.dto.ProductResponseDTO;
 import ru.kolbasov_d_k.backend.models.User;
@@ -14,7 +15,6 @@ import ru.kolbasov_d_k.backend.services.ProductService;
 import ru.kolbasov_d_k.backend.services.UserProductService;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Controller responsible for handling shopping cart operations.
@@ -57,19 +57,19 @@ public class CartController {
      *
      * @param user The authenticated user
      * @param productDTO Data transfer object containing product ID and quantity
-     * @return ResponseEntity containing the updated cart as a list of maps with product information
+     * @return ResponseEntity containing the updated cart as a list of CartItemResponseDTO
      * @throws ru.kolbasov_d_k.backend.utils.exceptions.NotFoundException If the product or user is not found
      * @throws ru.kolbasov_d_k.backend.utils.exceptions.OverLimitException If the requested quantity exceeds the available quantity
      */
     @PostMapping
-    public ResponseEntity<List<Map<String,Object>>> add(@AuthenticationPrincipal(expression = "user") User user,
+    public ResponseEntity<List<CartItemResponseDTO>> add(@AuthenticationPrincipal(expression = "user") User user,
                                                         @Valid @RequestBody ProductDTO productDTO) {
         cartService.addProductToUser(
                 user.getId(),
                 productDTO.getId(),
                 productDTO.getQuantity()
         );
-        List<Map<String,Object>> cart = userProductService.findOrders(user);
+        List<CartItemResponseDTO> cart = userProductService.findOrders(user);
         return ResponseEntity.ok(cart);
     }
 
@@ -78,19 +78,19 @@ public class CartController {
      *
      * @param user The authenticated user
      * @param productDTO Data transfer object containing product ID and the new quantity
-     * @return ResponseEntity containing the updated cart as a list of maps with product information
+     * @return ResponseEntity containing the updated cart as a list of CartItemResponseDTO
      * @throws ru.kolbasov_d_k.backend.utils.exceptions.NotFoundException If the product or user-product relationship is not found
      * @throws ru.kolbasov_d_k.backend.utils.exceptions.OverLimitException If the requested quantity exceeds the available quantity
      */
     @PatchMapping
-    public ResponseEntity<List<Map<String,Object>>> update(@AuthenticationPrincipal(expression = "user") User user,
+    public ResponseEntity<List<CartItemResponseDTO>> update(@AuthenticationPrincipal(expression = "user") User user,
                                                             @Valid @RequestBody ProductDTO productDTO) {
         cartService.updateProductQuantity(
                 user.getId(),
                 productDTO.getId(),
                 productDTO.getQuantity()
         );
-        List<Map<String,Object>> cart = userProductService.findOrders(user);
+        List<CartItemResponseDTO> cart = userProductService.findOrders(user);
         return ResponseEntity.ok(cart);
     }
 
@@ -99,17 +99,17 @@ public class CartController {
      *
      * @param user The authenticated user
      * @param productId The ID of the product to remove
-     * @return ResponseEntity containing the updated cart as a list of maps with product information
+     * @return ResponseEntity containing the updated cart as a list of CartItemResponseDTO
      * @throws ru.kolbasov_d_k.backend.utils.exceptions.NotFoundException If the user-product relationship is not found
      */
     @DeleteMapping("/{productId}")
-    public ResponseEntity<List<Map<String,Object>>> delete(@AuthenticationPrincipal(expression = "user") User user,
-                                                            @PathVariable Integer productId) {
+    public ResponseEntity<List<CartItemResponseDTO>> delete(@AuthenticationPrincipal(expression = "user") User user,
+                                                           @PathVariable Integer productId) {
         cartService.deleteProductFromUser(
                 user.getId(),
                 productId
         );
-        List<Map<String,Object>> cart = userProductService.findOrders(user);
+        List<CartItemResponseDTO> cart = userProductService.findOrders(user);
         return ResponseEntity.ok(cart);
     }
 

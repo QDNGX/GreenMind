@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.kolbasov_d_k.backend.dto.CartItemResponseDTO;
 import ru.kolbasov_d_k.backend.dto.ProductCreateDTO;
 import ru.kolbasov_d_k.backend.dto.ProductResponseDTO;
 import ru.kolbasov_d_k.backend.dto.UserResponseDTO;
@@ -212,11 +213,11 @@ public class AdminController {
      * <p>Required Role: ADMIN</p>
      *
      * @param id The ID of the user whose orders to retrieve
-     * @return ResponseEntity with list of Map objects containing user's orders
+     * @return ResponseEntity with list of CartItemResponseDTO containing user's orders
      */
     @GetMapping("/users/{id}/orders")
-    public ResponseEntity<List<Map<String, Object>>> getUserOrders(@PathVariable Integer id) {
-        List<Map<String, Object>> orders = userService.getUserOrders(id);
+    public ResponseEntity<List<CartItemResponseDTO>> getUserOrders(@PathVariable Integer id) {
+        List<CartItemResponseDTO> orders = userService.getUserOrders(id);
         return ResponseEntity.ok(orders);
     }
 }

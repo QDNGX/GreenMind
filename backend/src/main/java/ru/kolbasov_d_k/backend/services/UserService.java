@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.kolbasov_d_k.backend.dto.CartItemResponseDTO;
 import ru.kolbasov_d_k.backend.dto.UserDTO;
 import ru.kolbasov_d_k.backend.dto.UserResponseDTO;
 import ru.kolbasov_d_k.backend.models.Role;
@@ -206,10 +207,10 @@ public class UserService {
      * Delegates to UserProductService to retrieve user orders.
      * 
      * @param userId The ID of the user whose orders to retrieve
-     * @return List of orders (products in cart) for the user as Map objects
+     * @return List of orders (products in cart) for the user as CartItemResponseDTO
      * @throws ru.kolbasov_d_k.backend.utils.exceptions.NotFoundException if user not found
      */
-    public List<java.util.Map<String, Object>> getUserOrders(Integer userId) {
+    public List<CartItemResponseDTO> getUserOrders(Integer userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User", userId));
         
