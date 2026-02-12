@@ -98,10 +98,8 @@ public class SpringSecurity {
             // Обычный запрос - redirect как прежде
             String target = request.getParameter("redirect");
 
-            if (target == null || target.isBlank()) {
-                target = "/frontend/profile.html";
-            }
-            if (!target.startsWith("/")) {
+            if (target == null || target.isBlank()
+                || !target.startsWith("/") || target.startsWith("//")) {
                 target = "/frontend/profile.html";
             }
 
