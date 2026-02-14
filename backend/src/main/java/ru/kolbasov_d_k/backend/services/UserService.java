@@ -57,10 +57,12 @@ public class UserService {
      * Finds a user by their email address.
      *
      * @param email The email address of the user to find
-     * @return The user with the specified email address, or null if no user is found
+     * @return The user with the specified email address
+     * @throws NotFoundException if no user is found with the specified email
      */
     private User findByEmail(String email) {
-        return userRepository.findByEmail(email);
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("User with email " + email));
     }
 
     /**

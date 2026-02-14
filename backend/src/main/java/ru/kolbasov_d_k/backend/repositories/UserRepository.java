@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import ru.kolbasov_d_k.backend.models.User;
 
+import java.util.Optional;
+
 /**
  * Repository interface for User entity operations.
  * Provides methods for CRUD operations on users and custom query methods.
@@ -16,9 +18,9 @@ public interface UserRepository extends JpaRepository<User, Integer> {
      * Finds a user by their email address.
      *
      * @param email The email address to search for
-     * @return The user with the specified email address, or null if no user is found
+     * @return Optional containing the user, or empty if no user is found
      */
-    User findByEmail(String email);
+    Optional<User> findByEmail(String email);
 
     /**
      * Checks if a user with the given email exists.
