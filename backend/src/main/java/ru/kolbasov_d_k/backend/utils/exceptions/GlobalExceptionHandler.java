@@ -139,6 +139,20 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * Handles unauthorized access attempts.
+     * Returns an error response when a user is not authenticated.
+     *
+     * @param ex The UnauthorizedClientException containing the error message
+     * @return ResponseEntity with status 401 Unauthorized and a JSON error message
+     */
+    @ExceptionHandler(UnauthorizedClientException.class)
+    public ResponseEntity<Map<String, String>> handleUnauthorizedClient(UnauthorizedClientException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", "Пользователь не авторизован");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+    }
+
+    /**
      * Handles NoSuchElementException when optional elements are not found.
      * Returns an error response when trying to access non-existent elements.
      * 

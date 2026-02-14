@@ -12,6 +12,7 @@ import ru.kolbasov_d_k.backend.models.Role;
 import ru.kolbasov_d_k.backend.models.User;
 import ru.kolbasov_d_k.backend.repositories.UserRepository;
 import ru.kolbasov_d_k.backend.utils.exceptions.NotFoundException;
+import ru.kolbasov_d_k.backend.utils.exceptions.UnauthorizedClientException;
 
 import java.security.Principal;
 import java.time.LocalDate;
@@ -80,11 +81,11 @@ public class UserService {
      *
      * @param principal The Principal object representing the current user
      * @return The User object for the current user
-     * @throws IllegalArgumentException if the principal is null (user is not logged in)
+     * @throws UnauthorizedClientException if the principal is null (user is not logged in)
      */
     public User getCurrentUser(Principal principal) {
-        if(principal == null) {
-            throw new IllegalArgumentException("User is not logged in");
+        if (principal == null) {
+            throw new UnauthorizedClientException("Пользователь не авторизован");
         }
         return findByEmail(principal.getName());
     }
@@ -126,38 +127,25 @@ public class UserService {
     }
 
     /**
-     * Updates a user's username.
+     * Updates a user's profile fields. Only non-null values are applied.
+     * All changes are saved in a single transaction to ensure atomicity.
      *
-     * @param user The user to update
-     * @param username The new username
+     * @param user      The user to update
+     * @param username  The new username, or null to keep unchanged
+     * @param email     The new email, or null to keep unchanged
+     * @param birthDate The new birth date, or null to keep unchanged
      */
     @Transactional
-    public void updateUserName(User user, String username) {
-        user.setUsername(username);
-        userRepository.save(user);
-    }
-
-    /**
-     * Updates a user's email address.
-     *
-     * @param user The user to update
-     * @param email The new email address
-     */
-    @Transactional
-    public void updateUserEmail(User user, String email) {
-        user.setEmail(email);
-        userRepository.save(user);
-    }
-
-    /**
-     * Updates a user's birth date.
-     *
-     * @param user The user to update
-     * @param birthDate The new birth date
-     */
-    @Transactional
-    public void updateUserBirthDate(User user, LocalDate birthDate) {
-        user.setBirthDate(birthDate);
+    public void updateProfile(User user, String username, String email, LocalDate birthDate) {
+        if (username != null) {
+            user.setUsername(username);
+        }
+        if (email != null) {
+            user.setEmail(email);
+        }
+        if (birthDate != null) {
+            user.setBirthDate(birthDate);
+        }
         userRepository.save(user);
     }
 
