@@ -60,7 +60,7 @@ public class ProductDTO {
      *
      * @return The ID of the product
      */
-    public Integer getId() {
+    public Integer getProductId() {
         return productId;
     }
 
@@ -69,7 +69,7 @@ public class ProductDTO {
      *
      * @param productId The new ID of the product
      */
-    public void setId(Integer productId) {
+    public void setProductId(Integer productId) {
         this.productId = productId;
     }
 }

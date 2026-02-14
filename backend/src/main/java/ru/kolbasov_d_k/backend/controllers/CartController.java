@@ -66,7 +66,7 @@ public class CartController {
                                                         @Valid @RequestBody ProductDTO productDTO) {
         cartService.addProductToUser(
                 user.getId(),
-                productDTO.getId(),
+                productDTO.getProductId(),
                 productDTO.getQuantity()
         );
         List<CartItemResponseDTO> cart = userProductService.findOrders(user);
@@ -87,7 +87,7 @@ public class CartController {
                                                             @Valid @RequestBody ProductDTO productDTO) {
         cartService.updateProductQuantity(
                 user.getId(),
-                productDTO.getId(),
+                productDTO.getProductId(),
                 productDTO.getQuantity()
         );
         List<CartItemResponseDTO> cart = userProductService.findOrders(user);
