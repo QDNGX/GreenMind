@@ -16,8 +16,8 @@ import java.time.LocalDateTime;
  * This class is mapped to the "users" table in the database.
  * It includes user authentication information, profile details, and auditing fields.
  */
-@EntityListeners(AuditingEntityListener.class)
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "users")
 public class User {
 

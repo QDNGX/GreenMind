@@ -10,7 +10,6 @@ import ru.kolbasov_d_k.backend.models.Product;
 import ru.kolbasov_d_k.backend.repositories.ProductRepository;
 import ru.kolbasov_d_k.backend.utils.exceptions.NotFoundException;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -62,8 +61,7 @@ public class ProductService {
         product.setPrice(createDTO.getPrice());
         product.setImagePath(createDTO.getImagePath());
         product.setQuantity(createDTO.getQuantity());
-        product.setCreatedAt(LocalDateTime.now());
-        
+
         Product savedProduct = productRepository.save(product);
         return ProductResponseDTO.fromEntity(savedProduct);
     }

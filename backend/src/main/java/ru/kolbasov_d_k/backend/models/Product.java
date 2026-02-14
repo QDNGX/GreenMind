@@ -2,6 +2,9 @@ package ru.kolbasov_d_k.backend.models;
 
 
 import jakarta.persistence.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -12,6 +15,7 @@ import java.time.LocalDateTime;
  * It includes product details such as name, price, image path, and available quantity.
  */
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "products")
 public class Product {
 
@@ -45,9 +49,13 @@ public class Product {
     /**
      * The timestamp when the product was created.
      */
+    @CreatedDate
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @LastModifiedDate
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
     /**
      * The available quantity of the product in stock.
      */
