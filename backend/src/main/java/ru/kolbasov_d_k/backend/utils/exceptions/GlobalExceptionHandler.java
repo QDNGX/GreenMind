@@ -54,12 +54,12 @@ public class GlobalExceptionHandler {
         if (!notBlankErrors.isEmpty()) {
             // Если есть пустые поля в форме, показываем только их
             errorMessages = notBlankErrors.stream()
-                    .map(error -> error.getDefaultMessage() != null ? error.getDefaultMessage() : "Validation error")
+                    .map(error -> error.getDefaultMessage() != null ? error.getDefaultMessage() : "Ошибка валидации")
                     .collect(Collectors.joining("\n"));
         } else {
             // Если нет пустых полей, показываем остальные ошибки (формат, длина и т.д.)
             errorMessages = fieldErrors.stream()
-                    .map(error -> error.getDefaultMessage() != null ? error.getDefaultMessage() : "Validation error")
+                    .map(error -> error.getDefaultMessage() != null ? error.getDefaultMessage() : "Ошибка валидации")
                     .collect(Collectors.joining("\n"));
         }
         
@@ -270,7 +270,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> handleGlobalException(Exception ex) {
         log.error("Unhandled exception: {}", ex.getClass().getName(), ex);
         Map<String, String> error = new HashMap<>();
-        error.put("error", "Internal server error");
+        error.put("error", "Внутренняя ошибка сервера");
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
 }

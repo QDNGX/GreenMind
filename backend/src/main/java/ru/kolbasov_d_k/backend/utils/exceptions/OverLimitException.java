@@ -10,7 +10,7 @@ public class OverLimitException extends RuntimeException {
      * Constructs a new OverLimitException with a generic error message.
      */
     public OverLimitException() {
-        super("Limit exceeded");
+        super("Лимит превышен");
     }
 
     /**
@@ -32,7 +32,7 @@ public class OverLimitException extends RuntimeException {
      */
     public OverLimitException(String resourceName, int requested, int available) {
         super(String.format(
-                "Cannot reserve %d %s (only %d left in stock)",
+                "Невозможно зарезервировать %d %s (осталось на складе: %d)",
                 requested, resourceName, available));
     }
 }

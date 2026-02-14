@@ -193,7 +193,7 @@ public class AdminController {
         String newRole = requestBody.get("role");
         if (newRole == null || newRole.isBlank()) {
             Map<String, String> error = new HashMap<>();
-            error.put("error", "Role is required");
+            error.put("error", "Роль обязательна");
             return ResponseEntity.badRequest().body(null);
         }
         
