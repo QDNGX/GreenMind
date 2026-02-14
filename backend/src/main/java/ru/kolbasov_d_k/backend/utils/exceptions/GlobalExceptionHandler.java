@@ -38,14 +38,14 @@ public class GlobalExceptionHandler {
      * otherwise shows all other validation errors. This provides cleaner error
      * messages for users by focusing on empty field errors first.
      * Returns the same format as RegisterController for compatibility with existing frontend code.
-     * 
+     *
      * @param ex The MethodArgumentNotValidException containing validation errors
      * @return ResponseEntity with status 400 Bad Request and a map containing concatenated error messages
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationErrors(MethodArgumentNotValidException ex) {
         java.util.List<FieldError> fieldErrors = ex.getBindingResult().getFieldErrors();
-        
+
         // Разделение вывод ошибок на пустые поля в формах и остальные
         java.util.List<FieldError> notBlankErrors = fieldErrors.stream()
                 .filter(error -> error.getCode() != null && error.getCode().equals("NotBlank"))
@@ -62,7 +62,7 @@ public class GlobalExceptionHandler {
                     .map(error -> error.getDefaultMessage() != null ? error.getDefaultMessage() : "Ошибка валидации")
                     .collect(Collectors.joining("\n"));
         }
-        
+
         Map<String, String> error = new HashMap<>();
         error.put("error", errorMessages);
         return ResponseEntity.badRequest().body(error);
@@ -71,7 +71,7 @@ public class GlobalExceptionHandler {
     /**
      * Handles "Resource not found" exceptions.
      * Returns a standardized error response when requested resources cannot be found.
-     * 
+     *
      * @param ex The NotFoundException containing the error message
      * @return ResponseEntity with status 404 Not Found and a JSON error message
      */
@@ -85,7 +85,7 @@ public class GlobalExceptionHandler {
     /**
      * Handles "Limit exceeded" exceptions.
      * Returns an error response when operations exceed predefined limits (e.g., cart capacity, quantity limits).
-     * 
+     *
      * @param ex The OverLimitException containing the error message
      * @return ResponseEntity with status 409 Conflict and a JSON error message
      */
@@ -99,7 +99,7 @@ public class GlobalExceptionHandler {
     /**
      * Handles duplicate email exceptions during user registration.
      * Returns an error response when trying to register with an email that already exists.
-     * 
+     *
      * @param ex The DuplicateEmailException containing the error message
      * @return ResponseEntity with status 409 Conflict and a JSON error message
      */
@@ -113,7 +113,7 @@ public class GlobalExceptionHandler {
     /**
      * Handles Spring Security authentication failures.
      * Returns an error response when user credentials are incorrect or user is not found.
-     * 
+     *
      * @param ex The UsernameNotFoundException containing the error message
      * @return ResponseEntity with status 401 Unauthorized and a JSON error message
      */
@@ -127,7 +127,7 @@ public class GlobalExceptionHandler {
     /**
      * Handles IllegalArgumentException for invalid method arguments.
      * Returns an error response when method arguments are invalid or null.
-     * 
+     *
      * @param ex The IllegalArgumentException containing the error message
      * @return ResponseEntity with status 400 Bad Request and a JSON error message
      */
@@ -155,7 +155,7 @@ public class GlobalExceptionHandler {
     /**
      * Handles NoSuchElementException when optional elements are not found.
      * Returns an error response when trying to access non-existent elements.
-     * 
+     *
      * @param ex The NoSuchElementException
      * @return ResponseEntity with status 404 Not Found and a JSON error message
      */
@@ -169,7 +169,7 @@ public class GlobalExceptionHandler {
     /**
      * Handles database integrity violations (e.g., duplicate keys, foreign key constraints).
      * Returns an error response when database constraints are violated.
-     * 
+     *
      * @param ex The DataIntegrityViolationException
      * @return ResponseEntity with status 409 Conflict and a JSON error message
      */
@@ -177,14 +177,14 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
         Map<String, String> error = new HashMap<>();
         String message = "Нарушение целостности данных";
-        
+
         // Check for specific constraint violations
         if (ex.getMessage() != null) {
             if (ex.getMessage().contains("email") && ex.getMessage().contains("unique")) {
                 message = "Данный email уже используется";
             }
         }
-        
+
         error.put("error", message);
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
     }
@@ -192,7 +192,7 @@ public class GlobalExceptionHandler {
     /**
      * Handles malformed JSON requests that cannot be parsed.
      * Returns an error response when request body contains invalid JSON.
-     * 
+     *
      * @param ex The HttpMessageNotReadableException
      * @return ResponseEntity with status 400 Bad Request and a JSON error message
      */
@@ -206,7 +206,7 @@ public class GlobalExceptionHandler {
     /**
      * Handles unsupported HTTP methods.
      * Returns an error response when client uses HTTP method not supported by the endpoint.
-     * 
+     *
      * @param ex The HttpRequestMethodNotSupportedException
      * @return ResponseEntity with status 405 Method Not Allowed and a JSON error message
      */
@@ -220,7 +220,7 @@ public class GlobalExceptionHandler {
     /**
      * Handles missing required request parameters.
      * Returns an error response when required request parameters are not provided.
-     * 
+     *
      * @param ex The MissingServletRequestParameterException
      * @return ResponseEntity with status 400 Bad Request and a JSON error message
      */
@@ -234,7 +234,7 @@ public class GlobalExceptionHandler {
     /**
      * Handles type mismatch exceptions for request parameters.
      * Returns an error response when request parameter types don't match expected types.
-     * 
+     *
      * @param ex The MethodArgumentTypeMismatchException
      * @return ResponseEntity with status 400 Bad Request and a JSON error message
      */
@@ -248,7 +248,7 @@ public class GlobalExceptionHandler {
     /**
      * Handles Spring Security access denied exceptions.
      * Returns an error response when user doesn't have sufficient privileges.
-     * 
+     *
      * @param ex The AccessDeniedException
      * @return ResponseEntity with status 403 Forbidden and a JSON error message
      */
@@ -262,7 +262,7 @@ public class GlobalExceptionHandler {
     /**
      * Handles all other unexpected exceptions that are not caught by specific handlers.
      * Returns a generic error message without exposing internal system details for security reasons.
-     * 
+     *
      * @param ex The unhandled exception
      * @return ResponseEntity with status 500 Internal Server Error and a generic error message
      */

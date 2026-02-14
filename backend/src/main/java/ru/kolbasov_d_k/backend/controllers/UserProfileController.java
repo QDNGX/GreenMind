@@ -27,7 +27,7 @@ public class UserProfileController {
     /**
      * Constructs a new UserProfileController with the required services.
      *
-     * @param userService Service for user-related operations
+     * @param userService        Service for user-related operations
      * @param userProductService Service for user-product relationship operations
      */
     @Autowired
@@ -38,7 +38,7 @@ public class UserProfileController {
 
     /**
      * Retrieves the profile information of the currently authenticated user.
-     * 
+     *
      * @param principal The currently authenticated user
      * @return ResponseEntity containing a map with user profile information (username, email, birthDate, orders)
      * or a 401 Unauthorized status if the user is not authenticated
@@ -60,7 +60,7 @@ public class UserProfileController {
      * Updates the profile information of the currently authenticated user.
      * Supports partial updates for username, email, and birthDate fields.
      * Returns JSON response for compatibility with frontend APIHelper.
-     * 
+     *
      * @param principal The currently authenticated user
      * @param map       A map containing the fields to update. Supported keys: "username", "email", "birthDate"
      * @return ResponseEntity with status 200 OK and success message if the update was successful,

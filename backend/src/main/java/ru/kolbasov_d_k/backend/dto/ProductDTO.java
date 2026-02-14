@@ -30,7 +30,7 @@ public class ProductDTO {
      * Constructs a new ProductDTO with the specified product ID and quantity.
      *
      * @param productId The ID of the product
-     * @param quantity The quantity of the product
+     * @param quantity  The quantity of the product
      */
     public ProductDTO(int productId, int quantity) {
         this.productId = productId;

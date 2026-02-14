@@ -33,8 +33,8 @@ public class UserService {
     /**
      * Constructs a new UserService with the required dependencies.
      *
-     * @param userRepository Repository for user data access
-     * @param passwordEncoder Encoder for hashing passwords
+     * @param userRepository     Repository for user data access
+     * @param passwordEncoder    Encoder for hashing passwords
      * @param userProductService Service for user-product operations
      */
     @Autowired
@@ -94,11 +94,11 @@ public class UserService {
      * Retrieves all users from the database and converts them to DTOs for safe client response.
      * This method performs secure data transfer by mapping User entities to UserResponseDTO objects,
      * which exclude sensitive information like password hashes.
-     * 
+     *
      * <p>The method uses Java Stream API with method reference for efficient collection processing,
      * converting each User entity to a UserResponseDTO using the static factory method.</p>
-     * 
-     * <p>Security consideration: This method ensures that sensitive user information 
+     *
+     * <p>Security consideration: This method ensures that sensitive user information
      * (such as password hashes) is never exposed in the response.</p>
      *
      * @return A list of UserResponseDTO objects containing all users' non-sensitive information
@@ -152,7 +152,7 @@ public class UserService {
     /**
      * Deletes a user by their ID.
      * This method is used by administrators to remove users from the system.
-     * 
+     *
      * @param userId The ID of the user to delete
      * @throws ru.kolbasov_d_k.backend.utils.exceptions.NotFoundException if user not found
      */
@@ -167,26 +167,26 @@ public class UserService {
     /**
      * Updates the role of a user.
      * This method is used by administrators to promote/demote users between USER and ADMIN roles.
-     * 
-     * @param userId The ID of the user whose role to update
+     *
+     * @param userId  The ID of the user whose role to update
      * @param newRole The new role to assign to the user (USER or ADMIN)
      * @return UserResponseDTO with updated user information
      * @throws ru.kolbasov_d_k.backend.utils.exceptions.NotFoundException if user not found
-     * @throws IllegalArgumentException if role is invalid
+     * @throws IllegalArgumentException                                   if role is invalid
      */
     @Transactional
     public UserResponseDTO updateUserRole(Integer userId, String newRole) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User", userId));
-        
+
         // Validate and convert role string to enum
         try {
             ru.kolbasov_d_k.backend.models.Role role = ru.kolbasov_d_k.backend.models.Role.valueOf(newRole);
             user.setRole(role);
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Invalid role. Must be USER or ADMIN");
+            throw new IllegalArgumentException("Некорректная роль. Допустимые значения: USER или ADMIN");
         }
-        
+
         User updatedUser = userRepository.save(user);
         return UserResponseDTO.fromEntity(updatedUser);
     }
@@ -195,7 +195,7 @@ public class UserService {
      * Retrieves all orders for a specific user.
      * This method is used by administrators to view user purchase history.
      * Delegates to UserProductService to retrieve user orders.
-     * 
+     *
      * @param userId The ID of the user whose orders to retrieve
      * @return List of orders (products in cart) for the user as CartItemResponseDTO
      * @throws ru.kolbasov_d_k.backend.utils.exceptions.NotFoundException if user not found
@@ -203,7 +203,7 @@ public class UserService {
     public List<CartItemResponseDTO> getUserOrders(Integer userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User", userId));
-        
+
         // Delegate to UserProductService which has the necessary repository access
         return userProductService.findOrders(user);
     }
