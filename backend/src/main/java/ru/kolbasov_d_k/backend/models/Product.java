@@ -172,7 +172,24 @@ public class Product {
      *
      * @param quantity The new available quantity of the product
      */
-    public void setQuantity(int quantity) {
+    public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
+
+    /**
+     * Gets the last update timestamp of the product.
+     * @return The last update timestamp of the product
+     */
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    /**
+     * Sets the last update timestamp of the product.
+     * @param updatedAt The new last update timestamp of the product
+     */
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
 }
