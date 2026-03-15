@@ -1,0 +1,35 @@
+services:
+
+  db:
+    image: postgres:16-alpine
+    container_name: greenmind-db
+    environment:
+      POSTGRES_DB: greenmind
+      POSTGRES_USER: greenmind_user
+      POSTGRES_PASSWORD: greenmind_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./backend/database:/docker-entrypoint-initdb.d
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U greenmind_user -d greenmind"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: greenmind-app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:
