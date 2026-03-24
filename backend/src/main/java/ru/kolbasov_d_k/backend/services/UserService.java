@@ -181,7 +181,7 @@ public class UserService {
 
         // Validate and convert role string to enum
         try {
-            ru.kolbasov_d_k.backend.models.Role role = ru.kolbasov_d_k.backend.models.Role.valueOf(newRole);
+            Role role = Role.valueOf(newRole);
             user.setRole(role);
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Некорректная роль. Допустимые значения: USER или ADMIN");
