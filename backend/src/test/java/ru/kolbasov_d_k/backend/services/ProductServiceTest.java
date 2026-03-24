@@ -14,15 +14,17 @@ import ru.kolbasov_d_k.backend.dto.ProductCreateDTO;
 import ru.kolbasov_d_k.backend.dto.ProductResponseDTO;
 import ru.kolbasov_d_k.backend.models.Product;
 import ru.kolbasov_d_k.backend.repositories.ProductRepository;
+import ru.kolbasov_d_k.backend.utils.exceptions.NotFoundException;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Product Service Tests - unit tests")
@@ -101,7 +103,39 @@ class ProductServiceTest {
             verify(productRepository).findAll();
         }
 
+    }
 
+    // ---------------- find by id ------------------ //
+    @Nested
+    @DisplayName("findById()")
+    class FindById {
+
+        @Test
+        @DisplayName("Find product by id and return")
+        void find_whenProductExist_returnProduct(){
+            //Arrange
+            when(productRepository.findById(1)).thenReturn(Optional.of(testProduct));
+
+            //Act
+            ProductResponseDTO findProduct = productService.findById(1);
+
+            //Assert
+            assertThat(findProduct.getName()).isEqualTo("Ficus");
+            assertThat(findProduct.getPrice()).isEqualTo(new BigDecimal("29.99"));
+            assertThat(findProduct.getQuantity()).isEqualTo(10);
+            verify(productRepository).findById(1);
+        }
+
+        @Test
+        @DisplayName("Throw exception if product not found")
+        void find_whenProductNotFound_throwsException(){
+            //Arrange
+            when(productRepository.findById(1)).thenReturn(Optional.empty());
+
+            //Act & Assert
+            assertThatThrownBy(() -> productService.findById(1)).isInstanceOf(NotFoundException.class);
+
+        }
     }
 
     // ---------------- create ------------------ //
@@ -137,6 +171,72 @@ class ProductServiceTest {
 
         }
 
+    }
+
+    // ---------------- update ------------------ //
+    @Nested
+    @DisplayName("update()")
+    class Update {
+
+        @Test
+        @DisplayName("Update productDTO and returns")
+        void update_validDTO_savesAndReturnDTO(){
+            //Arrange
+            when(productRepository.findById(1)).thenReturn(Optional.of(testProduct));
+            when(productRepository.save(any(Product.class))).thenReturn(testProduct);
+
+            //Act
+            ProductResponseDTO updatedProduct1 = productService.update(1, testProductCreateDTO);
+
+            //Assert
+            assertThat(updatedProduct1.getName()).isEqualTo("Test Product");
+            assertThat(updatedProduct1.getPrice()).isEqualTo(new BigDecimal("29.99"));
+            assertThat(updatedProduct1.getImagePath()).isEqualTo("https://example.com/image.jpg");
+            assertThat(updatedProduct1.getQuantity()).isEqualTo(10);
+
+            verify(productRepository).findById(1);
+
+        }
+
+        @Test
+        @DisplayName("Throw Exception if product not found")
+        void update_whenProductNotFound_throwsException(){
+            //Arrange
+            when(productRepository.findById(1)).thenReturn(Optional.empty());
+
+            //Act & assert
+            assertThatThrownBy(() -> productService.update(1, testProductCreateDTO)).isInstanceOf(NotFoundException.class);
+        }
+    }
+
+    // ---------------- delete ------------------ //
+    @Nested
+    @DisplayName("delete()")
+    class Delete {
+
+        @Test
+        @DisplayName("Find entity and delete")
+        void delete_ifEntityFound_andDelete(){
+            //Arrange
+            when(productRepository.existsById(1)).thenReturn(true);
+
+            //Act
+            productService.delete(1);
+
+            //Assert
+            verify(productRepository).deleteById(1);
+        }
+
+        @Test
+        @DisplayName("Throw Exception of Entity not exist")
+        void delete_whenEntityNotFound_throwsException(){
+            //Arrange
+            when(productRepository.existsById(1)).thenReturn(false);
+
+            //Act & Assert
+            assertThatThrownBy(() -> productService.delete(1)).isInstanceOf(NotFoundException.class);
+            verify(productRepository, never()).deleteById(anyInt());
+        }
     }
 
 }
