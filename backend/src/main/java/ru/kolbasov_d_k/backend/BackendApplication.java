@@ -2,19 +2,16 @@ package ru.kolbasov_d_k.backend;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
-
 /**
  * Main application class for the GreenMind backend.
  * This class serves as the entry point for the Spring Boot application.
- * 
+ *
  * The @SpringBootApplication annotation enables auto-configuration, component scanning,
  * and defines this class as a configuration class.
- * 
- * The @EnableJpaAuditing annotation enables JPA auditing features, which are used
- * for automatically populating createdAt and updatedAt fields in entity classes.
+ *
+ * JPA auditing is configured separately in {@link ru.kolbasov_d_k.backend.config.JpaAuditingConfig}
+ * to avoid conflicts with @WebMvcTest slice tests.
  */
-@EnableJpaAuditing
 @SpringBootApplication
 public class BackendApplication {
 
